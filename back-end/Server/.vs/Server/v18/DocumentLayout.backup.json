@@ -62,52 +62,47 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "dbo.ProductNotes [Data]",
+              "Title": "dbo.ProductNotes.sql",
               "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductNotes.sql",
-              "ToolTip": "dbo.ProductNotes [Data]",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductNotes.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:51:02.335Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-15T17:51:02.335Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "dbo.Users [Data]",
+              "Title": "dbo.Users.sql",
               "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Users.sql",
-              "ToolTip": "dbo.Users [Data]",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Users.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:47:57.537Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-15T17:47:57.537Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "dbo.Products [Data]",
+              "Title": "dbo.Products.sql",
               "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Products.sql",
-              "ToolTip": "dbo.Products [Data]",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Products.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:47:36.339Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-15T17:47:36.339Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "dbo.ProductVolume [Data]",
+              "Title": "dbo.ProductVolume.sql",
               "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductVolume.sql",
-              "ToolTip": "dbo.ProductVolume [Data]",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductVolume.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:45:22.233Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-15T17:45:22.233Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "dbo.ProductImages [Data]",
+              "Title": "dbo.ProductImages.sql",
               "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductImages.sql",
-              "ToolTip": "dbo.ProductImages [Data]",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductImages.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:37:53.03Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-15T17:37:53.03Z"
             },
             {
               "$type": "Document",
@@ -119,8 +114,7 @@
               "RelativeToolTip": "API\\Program.cs",
               "ViewState": "AgIAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-15T17:00:48.151Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-15T17:00:48.151Z"
             },
             {
               "$type": "Document",
@@ -132,8 +126,7 @@
               "RelativeToolTip": "API\\appsettings.json",
               "ViewState": "AgIAAA4AAAAAAAAAAADwvxIAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-15T16:56:47.659Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-15T16:56:47.659Z"
             }
           ]
         },

@@ -51,6 +51,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: '**.theperfumeshop.com',
+      },
+      // Cloudinary image hosting
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
       }
     ],
     // Enable unoptimized images for external domains not in the list

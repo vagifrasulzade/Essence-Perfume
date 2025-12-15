@@ -159,4 +159,3 @@ C:\Users\LOQ\Desktop\Perfume Project\back-end\Server\API\bin\Debug\net8.0\Micros
 C:\Users\LOQ\Desktop\Perfume Project\back-end\Server\API\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\LOQ\Desktop\Perfume Project\back-end\Server\API\bin\Debug\net8.0\CloudinaryDotNet.dll
 C:\Users\LOQ\Desktop\Perfume Project\back-end\Server\API\bin\Debug\net8.0\Newtonsoft.Json.dll
-C:\Users\LOQ\Desktop\Perfume Project\back-end\Server\API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
