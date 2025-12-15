@@ -1,0 +1,106 @@
+﻿using API.DTOs.ProductDTOs;
+using API.Services.Interfaces;
+using API.Validation.ContactValidations;
+using API.Validation.ProductValidations;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers.Admin;
+
+[Route("api/admin")]
+[ApiController]
+public class AdminProductController : ControllerBase
+{
+    private readonly IProductService _service;
+
+    public AdminProductController(IProductService service)
+    {
+        _service = service;
+    }
+    [HttpPost("Product/Add")]
+    public async Task<IActionResult> Create([FromBody] ProductCreateDTO dto)
+    {
+        try
+        {
+            var validateResult = await new CreateProductValidator().ValidateAsync(dto);
+
+            if (!validateResult.IsValid)
+            {
+                var errors = validateResult.Errors
+                     .Select(e => $"{e.PropertyName}: {e.ErrorMessage}");
+                return BadRequest(errors);
+            }
+            await _service.CreateAsync(dto);
+            return Created("Product created successfully.", dto);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+
+    }
+    [HttpPut("Product/{id:int}/update")]
+    public async Task<IActionResult> Update(int id, [FromBody] ProductUpdateDTO dto)
+    {
+        try
+        {
+            var validateResult = await new UpdateProductValidator().ValidateAsync(dto);
+            if (!validateResult.IsValid)
+            {
+                var errors = validateResult.Errors
+                     .Select(e => $"{e.PropertyName}: {e.ErrorMessage}");
+                return BadRequest(errors);
+            }
+            await _service.UpdateAsync(id, dto);
+            return Ok(new { message = " Product updated successfully!" });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+    [HttpPatch("Product/{id:int}/soft")]
+    public async Task<IActionResult> SoftDelete(int id)
+    {
+        try
+        {
+            await _service.SoftDeleteAsync(id);
+            return Ok(new { message = "Product deleted successfully!" });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPatch("Product/{id:int}/recover")]
+    public async Task<IActionResult> Recover(int id)
+    {
+        try
+        {
+            await _service.RecoverAsync(id);
+            return Ok(new { message = "Product recovered successfully!" });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+
+    [HttpDelete("Product/{id:int}/delete")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            await _service.RemoveAsync(id);
+            return Ok(new { message = "Product deleted successfully!" });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+}

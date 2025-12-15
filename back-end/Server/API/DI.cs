@@ -1,0 +1,112 @@
+﻿using API.Helpers;
+using API.Models;
+using API.Services.Implementations;
+using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
+using System.Text;
+
+namespace API;
+
+public static class DI
+{
+    public static IServiceCollection AddSwagger(this IServiceCollection services)
+    {
+    services.AddSwaggerGen(
+        setup =>
+        {
+            setup.SwaggerDoc(
+                "v1",
+                new OpenApiInfo()
+                {
+                    Title = "Perfume API",
+                    Version = "v2.0",
+                    Description = "Perfume E-commerce API with JWT Authentication"
+                });
+
+            setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+            });
+
+            setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    }, new string[] { }
+                }
+            });
+
+            // Support for file upload in Swagger
+            setup.MapType<IFormFile>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Format = "binary"
+            });
+
+            setup.IgnoreObsoleteActions();
+            setup.CustomSchemaIds(type => type.FullName);
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        // JWT Configuration
+        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
+        // Token Service
+        services.AddScoped<ITokenService, TokenService>();
+
+        // JWT Authentication
+        var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
+        
+        if (jwtSettings == null || string.IsNullOrEmpty(jwtSettings.Secret))
+        {
+            throw new InvalidOperationException("JWT settings are not configured properly!");
+        }
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+        // Authorization Policies
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+            options.AddPolicy("AdminOrUser", policy => policy.RequireRole("Admin", "User"));
+        });
+
+        return services;
+    }
+
+
+}

@@ -1,0 +1,46 @@
+﻿using API.DTOs.ContactDTOs;
+using FluentValidation;
+
+namespace API.Validation.ContactValidations;
+
+public class CreateContactValidator : AbstractValidator<ContactCreateDTO>
+{
+    public CreateContactValidator()
+    {
+        RuleFor(u => u.FullName)
+              .NotEmpty().WithMessage("Full Name is Required !!")
+              .NotNull().WithMessage("Full Name is Required !!")
+              .MinimumLength(2).WithMessage("Full Name should not be Less Than 2 !!")
+              .MaximumLength(60).WithMessage("Full Name should not be More Than 60 !!");
+
+
+        RuleFor(u => u.Email)
+            .NotEmpty().WithMessage("Email is required!")
+            .NotNull().WithMessage("Email is required!")
+            .MinimumLength(12).WithMessage("Email should not be less than 12 characters (e.g., name@gmail.com)")
+            .MaximumLength(60).WithMessage("Email should not be more than 60 characters (e.g., name@gmail.com)")
+            .Matches(@"^[A-Za-z0-9._%+-]{1,64}@(gmail\.com|mail\.ru|outlook\.com|yahoo\.com|hotmail\.com)$")
+            .WithMessage("Invalid email domain! Allowed domains: gmail.com, mail.ru, outlook.com, yahoo.com, hotmail.com");
+
+
+
+        RuleFor(u => u.Phone)
+            .Matches(@"^\+[1-9]\d{1,14}$")
+            .WithMessage("Phone number must include a valid country code (e.g. +1, +44, +90, +994) and contain only digits.")
+            .MaximumLength(15)
+            .WithMessage("Phone number must not exceed 15 digits (E.164 international format).");
+
+        RuleFor(u => u.Subject)
+               .NotEmpty().WithMessage("Subject is Required !!")
+               .NotNull().WithMessage("Subject is Required !!")
+               .MinimumLength(5).WithMessage("Subject should not be Less Than 5 !!")
+               .MaximumLength(100).WithMessage("Subject should not be More Than 100 !!");
+
+        RuleFor(u => u.Message)
+            .NotEmpty().WithMessage("Message is Required !!")
+            .NotNull().WithMessage("Message is Required !!")
+             .MinimumLength(2).WithMessage("Message should not be More Than 2 !!")
+             .MaximumLength(1000).WithMessage("Message should not be More Than 1000 !!");
+
+    }
+}

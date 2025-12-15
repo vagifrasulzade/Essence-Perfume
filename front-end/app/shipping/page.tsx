@@ -1,0 +1,10 @@
+import MainLayout from "@/layout/MainLayout";
+import Shipping from "@/pages/info/Shipping";
+
+export default function ShippingPage() {
+  return (
+    <MainLayout>
+        <Shipping />
+    </MainLayout>
+  );
+}

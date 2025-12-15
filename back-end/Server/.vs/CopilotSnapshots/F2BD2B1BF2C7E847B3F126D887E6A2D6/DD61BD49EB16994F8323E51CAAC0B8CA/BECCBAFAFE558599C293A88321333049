@@ -1,0 +1,133 @@
+﻿using API;
+using API.Data;
+using API.DTOs.AuthDTOs;
+using API.DTOs.ContactDTOs;
+using API.DTOs.ProductDTOs;
+using API.Helpers;
+using API.Mapper;
+using API.Models;
+using API.Services.Implementations;
+using API.Services.Interfaces;
+using API.Validation.AuthValidations;
+using API.Validation.ContactValidations;
+using API.Validation.ProductValidations;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+     options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+     options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
+    });
+
+
+builder.Services.AddEndpointsApiExplorer();
+
+// Database
+builder.Services.AddDbContext<AppDbContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Perfume_DB"));
+});
+
+// AutoMapper
+builder.Services.AddAutoMapper(
+    opt=>{ 
+     opt.AddProfile<ContactMP>();
+        opt.AddProfile<AuthMP>();
+  opt.AddProfile<ProductMP>();
+    });
+
+// Validation
+
+//Contact 
+builder.Services.AddScoped<IValidator<ContactCreateDTO>, CreateContactValidator>();
+builder.Services.AddScoped<IValidator<ContactUpdateDTO>, UpdateContactValidator>();
+
+//Auth 
+builder.Services.AddScoped<IValidator<CreateUserDTO>,CreateUserValidator>();
+builder.Services.AddScoped<IValidator<UpdateUserDTO>,UpdateUserValidator>();
+builder.Services.AddScoped<IValidator<ChangePasswordDTO>,ChangePasswordValidator>();
+
+//Product
+builder.Services.AddScoped<IValidator<ProductCreateDTO>, CreateProductValidator>();
+builder.Services.AddScoped<IValidator<ProductUpdateDTO>, UpdateProductValidator>();
+
+
+//Order
+
+
+
+// Services
+builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+// JWT Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// Swagger
+builder.Services.AddSwagger();
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
+      .AllowAnyHeader()
+           .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseRouting();
+
+app.UseCors();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Static files configuration
+app.UseStaticFiles(); // wwwroot klasöründeki dosyaları serve etmek için
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+     Path.Combine(app.Environment.ContentRootPath, "wwwroot", "uploads")),
+    RequestPath = "/uploads"
+});
+
+// Seed default admin user
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        await DatabaseSeeder.SeedDefaultAdminAsync(context);
+    }
+    catch (Exception ex)
+    {
+      var logger = services.GetRequiredService<ILogger<Program>>();
+ logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
+
+app.MapControllers();
+
+app.Run();

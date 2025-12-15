@@ -1,0 +1,229 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Backgrounds - Ivory/Cream */
+  --background: oklch(0.97 0.01 60);
+  --foreground: oklch(0.15 0 0);
+
+  /* Cards */
+  --card: oklch(0.98 0.008 60);
+  --card-foreground: oklch(0.15 0 0);
+
+  /* Popovers */
+  --popover: oklch(0.98 0.008 60);
+  --popover-foreground: oklch(0.15 0 0);
+
+  /* Primary - Matte Gold */
+  --primary: oklch(0.72 0.05 80);
+  --primary-foreground: oklch(0.15 0 0);
+
+  /* Secondary - Ivory */
+  --secondary: oklch(0.92 0.01 60);
+  --secondary-foreground: oklch(0.15 0 0);
+
+  /* Muted */
+  --muted: oklch(0.93 0.01 60);
+  --muted-foreground: oklch(0.45 0.01 60);
+
+  /* Accent - Matte Gold */
+  --accent: oklch(0.72 0.05 80);
+  --accent-foreground: oklch(0.15 0 0);
+
+  /* Destructive */
+  --destructive: oklch(0.55 0.25 15);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  /* Borders */
+  --border: oklch(0.88 0.01 60);
+  --input: oklch(0.88 0.01 60);
+  --ring: oklch(0.72 0.05 80);
+
+  /* Category-specific color palettes */
+
+  /* Men - Modern Elegant */
+  --men-primary: oklch(0.3694 0.1376 250);
+  --men-accent: oklch(0.68 0.03 70);
+  --men-bg: oklch(0.98 0 0);
+  --men-text: oklch(0.2 0 0);
+
+  /* Women - Romantic Soft */
+  --women-primary: oklch(0.78 0.08 25);
+  --women-accent: oklch(0.88 0.04 50);
+  --women-bg: oklch(0.99 0.005 25);
+  --women-text: oklch(0.22 0 0);
+
+  /* Kid - Blue */
+  --kid-primary: oklch(0.6723 0.1347 199.37);
+  --kid-accent: oklch(0.5556 0.1552 199.37);
+  --kid-bg: oklch(0.99 0.005 199.37);
+  --kid-text: oklch(0.4087 0.1347 199.37);
+
+  /* Charts */
+  --chart-1: oklch(0.72 0.05 80);
+  --chart-2: oklch(0.78 0.08 25);
+  --chart-3: oklch(0.34 0.03 250);
+  --chart-4: oklch(0.75 0.05 40);
+  --chart-5: oklch(0.78 0.02 60);
+
+  --radius: 10px;
+
+  /* Sidebar */
+  --sidebar: oklch(0.98 0.008 60);
+  --sidebar-foreground: oklch(0.15 0 0);
+  --sidebar-primary: oklch(0.72 0.05 80);
+  --sidebar-primary-foreground: oklch(0.15 0 0);
+  --sidebar-accent: oklch(0.94 0.01 60);
+  --sidebar-accent-foreground: oklch(0.15 0 0);
+  --sidebar-border: oklch(0.88 0.01 60);
+  --sidebar-ring: oklch(0.72 0.05 80);
+}
+
+.dark {
+  --background: oklch(0.2 0.01 60);
+  --foreground: oklch(0.95 0.01 60);
+  --card: oklch(0.24 0.01 60);
+  --card-foreground: oklch(0.95 0.01 60);
+  --popover: oklch(0.24 0.01 60);
+  --popover-foreground: oklch(0.95 0.01 60);
+  --primary: oklch(0.72 0.05 80);
+  --primary-foreground: oklch(0.15 0 0);
+  --secondary: oklch(0.35 0.01 60);
+  --secondary-foreground: oklch(0.95 0.01 60);
+  --muted: oklch(0.3 0.01 60);
+  --muted-foreground: oklch(0.7 0.01 60);
+  --accent: oklch(0.72 0.05 80);
+  --accent-foreground: oklch(0.15 0 0);
+  --destructive: oklch(0.6 0.25 15);
+  --destructive-foreground: oklch(0.95 0.01 60);
+  --border: oklch(0.35 0.01 60);
+  --input: oklch(0.35 0.01 60);
+  --ring: oklch(0.72 0.05 80);
+  --sidebar: oklch(0.22 0.01 60);
+  --sidebar-foreground: oklch(0.95 0.01 60);
+  --sidebar-primary: oklch(0.72 0.05 80);
+  --sidebar-primary-foreground: oklch(0.15 0 0);
+  --sidebar-accent: oklch(0.3 0.01 60);
+  --sidebar-accent-foreground: oklch(0.95 0.01 60);
+  --sidebar-border: oklch(0.35 0.01 60);
+  --sidebar-ring: oklch(0.72 0.05 80);
+}
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+
+  /* Color Palette */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: theme("fontFamily.serif");
+}
+
+/* Category-specific utility classes */
+.category-men {
+  --primary: var(--men-primary);
+  --accent: var(--men-accent);
+  --card: var(--men-bg);
+  color: var(--men-text);
+}
+
+.category-women {
+  --primary: var(--women-primary);
+  --accent: var(--women-accent);
+  --card: var(--women-bg);
+  color: var(--women-text);
+}
+
+.category-kid,
+.category-kids {
+  --primary: var(--kid-primary);
+  --accent: var(--kid-accent);
+  --card: var(--kid-bg);
+  color: var(--kid-text);
+}
+
+/* Kid-specific styles - only star is green, price/rating number/name are black with green on hover */
+/* Star icon - green */
+.category-kid .fill-primary,
+.category-kids .fill-primary {
+  fill: var(--kid-primary) !important;
+}
+
+/* Price - black by default, green on hover */
+
+.category-kid p.font-semibold,
+.category-kids p.font-semibold {
+  color: oklch(0.15 0 0) !important; /* Black */
+}
+
+/* Rating number - black by default, green on hover */
+.category-kid .rating-number,
+.category-kids .rating-number,
+.category-kid .flex.items-center > span.text-sm,
+.category-kids .flex.items-center > span.text-sm {
+  color: oklch(0.15 0 0) !important; /* Black */
+}
+
+/* Product name (h3) - black by default, green on hover */
+.category-kid h3,
+.category-kids h3 {
+  color: oklch(0.15 0 0) !important; /* Black */
+}
+
+.category-kid h3:hover,
+.category-kids h3:hover {
+  color: var(--kid-primary) !important; /* Green on hover */
+}
