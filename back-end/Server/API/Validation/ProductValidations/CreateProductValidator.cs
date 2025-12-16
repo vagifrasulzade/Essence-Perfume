@@ -57,7 +57,7 @@ public class ProductImageCreateValidator : AbstractValidator<ProductImageCreateD
     {
         RuleFor(x => x.Url)
             .NotEmpty().WithMessage("Image URL is required.")
-            .MaximumLength(2000).WithMessage("Image URL cannot exceed 2000 characters.");
+            .MaximumLength(6000).WithMessage("Image URL cannot exceed 6000 characters.");
         RuleFor(x => x.Sort)
             .GreaterThanOrEqualTo(0).WithMessage("Sort must be zero or positive.");
     }

@@ -3,19 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductVolume.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\di.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|solutionrelative:api\\di.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Products.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\services\\interfaces\\icloudinaryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|solutionrelative:api\\services\\interfaces\\icloudinaryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductNotes.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\services\\implementations\\cloudinaryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|solutionrelative:api\\services\\implementations\\cloudinaryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductImages.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\controllers\\admin\\adminproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|solutionrelative:api\\controllers\\admin\\adminproductcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Users.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|solutionrelative:api\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|solutionrelative:api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\validation\\productvalidations\\updateproductvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|solutionrelative:api\\validation\\productvalidations\\updateproductvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\validation\\productvalidations\\createproductvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|solutionrelative:api\\validation\\productvalidations\\createproductvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6D262231-D47D-4F94-B6FE-3A1FBA21DD40}|API\\API.csproj|c:\\users\\loq\\desktop\\perfume project\\back-end\\server\\api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -33,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 207,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -61,52 +78,104 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "dbo.ProductNotes.sql",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductNotes.sql",
-              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductNotes.sql",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:51:02.335Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "dbo.Users.sql",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Users.sql",
-              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Users.sql",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:47:57.537Z"
+              "DocumentIndex": 0,
+              "Title": "DI.cs",
+              "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\DI.cs",
+              "RelativeDocumentMoniker": "API\\DI.cs",
+              "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\DI.cs",
+              "RelativeToolTip": "API\\DI.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T06:25:50.116Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "dbo.Products.sql",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Products.sql",
-              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.Products.sql",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:47:36.339Z"
+              "Title": "ICloudinaryService.cs",
+              "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Services\\Interfaces\\ICloudinaryService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\Interfaces\\ICloudinaryService.cs",
+              "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Services\\Interfaces\\ICloudinaryService.cs",
+              "RelativeToolTip": "API\\Services\\Interfaces\\ICloudinaryService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T06:25:34.054Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "dbo.ProductVolume.sql",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductVolume.sql",
-              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductVolume.sql",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:45:22.233Z"
+              "DocumentIndex": 2,
+              "Title": "CloudinaryService.cs",
+              "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Services\\Implementations\\CloudinaryService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\Implementations\\CloudinaryService.cs",
+              "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Services\\Implementations\\CloudinaryService.cs",
+              "RelativeToolTip": "API\\Services\\Implementations\\CloudinaryService.cs",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAAAAkAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T06:25:11.435Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "dbo.ProductImages.sql",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductImages.sql",
-              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/PerfumeDB/True/SqlTable/dbo.ProductImages.sql",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-15T17:37:53.03Z"
+              "Title": "AdminProductController.cs",
+              "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Controllers\\Admin\\AdminProductController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\Admin\\AdminProductController.cs",
+              "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Controllers\\Admin\\AdminProductController.cs",
+              "RelativeToolTip": "API\\Controllers\\Admin\\AdminProductController.cs",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAAAAUAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T06:24:47.591Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CartController.cs",
+              "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Controllers\\CartController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\CartController.cs",
+              "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Controllers\\CartController.cs",
+              "RelativeToolTip": "API\\Controllers\\CartController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T06:24:42.047Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "API\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T06:24:40.183Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "UpdateProductValidator.cs",
+              "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Validation\\ProductValidations\\UpdateProductValidator.cs",
+              "RelativeDocumentMoniker": "API\\Validation\\ProductValidations\\UpdateProductValidator.cs",
+              "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Validation\\ProductValidations\\UpdateProductValidator.cs",
+              "RelativeToolTip": "API\\Validation\\ProductValidations\\UpdateProductValidator.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAADsAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T06:24:20.202Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CreateProductValidator.cs",
+              "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Validation\\ProductValidations\\CreateProductValidator.cs",
+              "RelativeDocumentMoniker": "API\\Validation\\ProductValidations\\CreateProductValidator.cs",
+              "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Validation\\ProductValidations\\CreateProductValidator.cs",
+              "RelativeToolTip": "API\\Validation\\ProductValidations\\CreateProductValidator.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAADsAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T06:23:49.26Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\Program.cs",
               "RelativeDocumentMoniker": "API\\Program.cs",
@@ -118,13 +187,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\appsettings.json",
               "RelativeDocumentMoniker": "API\\appsettings.json",
               "ToolTip": "C:\\Users\\LOQ\\Desktop\\Perfume Project\\back-end\\Server\\API\\appsettings.json",
               "RelativeToolTip": "API\\appsettings.json",
-              "ViewState": "AgIAAA4AAAAAAAAAAADwvxIAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAADwvxQAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2025-12-15T16:56:47.659Z"
             }
