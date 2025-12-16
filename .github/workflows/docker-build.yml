@@ -28,7 +28,7 @@ jobs:
           context: ./back-end/Server
           file: ./back-end/Server/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/perfume-backend:latest
+          tags: vagifrasulzade2002/perfume-backend:latest
 
       # FRONTEND
       - name: Build & Push Frontend
@@ -37,4 +37,4 @@ jobs:
           context: ./front-end
           file: ./front-end/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/perfume-frontend:latest
+          tags: vagifrasulzade2002/perfume-frontend:latest
