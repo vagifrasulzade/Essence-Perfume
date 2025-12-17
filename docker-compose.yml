@@ -22,7 +22,7 @@ services:
       - db
     environment:
       - ASPNETCORE_URLS=http://+:5034
-      - ConnectionStrings__Perfume_DB=Server=perfume-sql,1433;Database=PerfumeDB;User Id=sa;Password=Salam123!@;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=perfume-sql,1433;Database=PerfumeDB;User Id=sa;Password=Salam123!@;TrustServerCertificate=True;
     ports:
       - "5034:5034"
     networks:
@@ -36,8 +36,6 @@ services:
     container_name: perfume-frontend
     depends_on:
       - backend
-    environment:
-      - NEXT_PUBLIC_API_URL=http://perfume-backend:5034/api
     ports:
       - "3000:3000"
     networks:

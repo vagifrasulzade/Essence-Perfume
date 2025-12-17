@@ -38,3 +38,4 @@ jobs:
           file: ./front-end/Dockerfile
           push: true
           tags: vagifrasulzade2002/perfume-frontend:latest
+

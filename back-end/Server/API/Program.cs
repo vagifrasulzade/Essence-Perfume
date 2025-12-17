@@ -19,6 +19,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Kestrel to use port 5000
+builder.WebHost.UseUrls("http://localhost:5000");
+
 // Add services to the container.
 
 builder.Services.AddControllers()
@@ -88,11 +91,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(
-              "http://localhost:3000", 
-              "http://localhost:3001",
-              "http://perfume-frontend:3000",
-              "http://frontend:3000")
+        policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
