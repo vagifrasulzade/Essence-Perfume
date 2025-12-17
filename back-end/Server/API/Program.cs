@@ -19,8 +19,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel to use port 5000
-builder.WebHost.UseUrls("http://localhost:5000");
+// Configure Kestrel - will use ASPNETCORE_URLS environment variable if set (for Docker)
+// Otherwise defaults to port 5000 for local development
+if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_URLS")))
+{
+    builder.WebHost.UseUrls("http://localhost:5000");
+}
 
 // Add services to the container.
 
@@ -37,7 +41,10 @@ builder.Services.AddEndpointsApiExplorer();
 // Database
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("Perfume_DB"));
+    // Try Docker connection string first, then fall back to local development
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                          ?? builder.Configuration.GetConnectionString("Perfume_DB");
+    opt.UseSqlServer(connectionString);
 });
 
 // AutoMapper
@@ -86,12 +93,17 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 // Swagger
 builder.Services.AddSwagger();
 
-// CORS
+// CORS - Allow frontend from different sources (local and Docker)
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:3001")
+        policy.WithOrigins(
+                "http://localhost:3000", 
+                "http://localhost:3001",
+                "http://frontend:3000",  // Docker container name
+                "http://127.0.0.1:3000"
+              )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -113,18 +125,58 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Seed default admin user - don't block startup if this fails
+// Database migration and seeding - retry logic for Docker startup
 try
 {
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
         var logger = services.GetRequiredService<ILogger<Program>>();
+        var context = services.GetRequiredService<AppDbContext>();
+        
+        // Retry logic for database connection (important for Docker)
+        var maxRetries = 10;
+        var retryCount = 0;
+        var connected = false;
+        
+        while (!connected && retryCount < maxRetries)
+        {
+            try
+            {
+                logger.LogInformation($"Attempting to connect to database (attempt {retryCount + 1}/{maxRetries})...");
+                await context.Database.CanConnectAsync();
+                connected = true;
+                logger.LogInformation("Successfully connected to database.");
+            }
+            catch (Exception ex)
+            {
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    logger.LogError(ex, "Failed to connect to database after {MaxRetries} attempts. Application will start but may not function correctly.", maxRetries);
+                    throw;
+                }
+                logger.LogWarning("Database connection failed. Retrying in 5 seconds... (attempt {RetryCount}/{MaxRetries})", retryCount, maxRetries);
+                await Task.Delay(5000);
+            }
+        }
+        
+        // Run migrations
         try
         {
-            var context = services.GetRequiredService<AppDbContext>();
-            // Test database connection
-            await context.Database.CanConnectAsync();
+            logger.LogInformation("Running database migrations...");
+            await context.Database.MigrateAsync();
+            logger.LogInformation("Database migrations completed successfully.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Database migrations failed. Application will continue to start.");
+        }
+        
+        // Seed default data
+        try
+        {
+            logger.LogInformation("Seeding database...");
             await DatabaseSeeder.SeedDefaultAdminAsync(context);
             logger.LogInformation("Database seeding completed successfully.");
         }
@@ -137,7 +189,7 @@ try
 catch (Exception ex)
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    logger.LogWarning(ex, "Could not create scope for database seeding. Application will continue to start.");
+    logger.LogWarning(ex, "Database initialization failed. Application will continue to start.");
 }
 
 app.MapControllers();

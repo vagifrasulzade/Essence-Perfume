@@ -11,6 +11,12 @@ services:
       - perfume-net
     volumes:
       - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Salam123!@ -Q "SELECT 1" -C || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   backend:
     build:
@@ -19,14 +25,17 @@ services:
     image: perfume-backend:latest
     container_name: perfume-backend
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5034
       - ConnectionStrings__DefaultConnection=Server=perfume-sql,1433;Database=PerfumeDB;User Id=sa;Password=Salam123!@;TrustServerCertificate=True;
     ports:
       - "5034:5034"
     networks:
       - perfume-net
+    restart: on-failure
 
   frontend:
     build:
@@ -36,10 +45,14 @@ services:
     container_name: perfume-frontend
     depends_on:
       - backend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:5034/api
     ports:
       - "3000:3000"
     networks:
       - perfume-net
+    restart: on-failure
 
 networks:
   perfume-net:

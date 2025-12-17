@@ -11,8 +11,8 @@ RUN dotnet restore Server.sln
 # Copy the rest of the files
 COPY . ./
 
-# Publish the application
-RUN dotnet publish API/API.csproj -c Release -o /app/publish --no-restore
+# Publish the application (without --no-restore to avoid cached path issues)
+RUN dotnet publish API/API.csproj -c Release -o /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
