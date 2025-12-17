@@ -5,8 +5,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (using npm install instead of npm ci to handle lock file sync issues)
+RUN npm install
 
 # Copy the rest of the application
 COPY . .
@@ -20,7 +20,7 @@ WORKDIR /app
 
 # Copy package files and install production dependencies only
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --production
 
 # Copy built application from build stage
 COPY --from=build /app/.next ./.next
