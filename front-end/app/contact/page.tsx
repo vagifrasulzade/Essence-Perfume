@@ -1,5 +1,5 @@
 import MainLayout from "@/layout/MainLayout";
-import Contact from "@/pages/info/Contact";
+import Contact from "@/page-components/info/Contact";
 
 
 

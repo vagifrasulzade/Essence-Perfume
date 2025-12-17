@@ -11,8 +11,12 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
-# Build the Next.js application
-RUN npm run build
+# Set NODE_ENV to production for build
+ENV NODE_ENV=production
+
+# Build the Next.js application with increased memory and disable telemetry
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # Production stage
 FROM node:20-alpine AS runtime

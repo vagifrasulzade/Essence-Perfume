@@ -15,7 +15,7 @@ import PriceFilter from "./shop/Price"
 import ActiveFilter from "./shop/Active"
 import Sort from "./shop/Sort"
 import Mobile from "./shop/Mobile"
-import { ProductCard } from "@/pages/components/ProductCard"
+import { ProductCard } from "@/page-components/components/ProductCard"
 
 export default function Shop() {
   const [products, setProducts] = useState<Product[]>([])

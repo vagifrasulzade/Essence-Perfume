@@ -1,5 +1,5 @@
 import MainLayout from "@/layout/MainLayout";
-import Service from "@/pages/components/Service";
+import Service from "@/page-components/components/Service";
 
 export default function ServicePage() {
     return(

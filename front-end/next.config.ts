@@ -20,7 +20,6 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '**.versace.com',
       },
-      // Add more common perfume brand domains as needed
       {
         protocol: 'https',
         hostname: '**.dior.com',

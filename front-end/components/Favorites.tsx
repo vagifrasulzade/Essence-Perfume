@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ProductCard } from "@/pages/components/ProductCard"
+import { ProductCard } from "@/page-components/components/ProductCard"
 import { Heart } from "lucide-react"
 import Link from "next/link"
 import { Button } from "./ui/button"

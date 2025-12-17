@@ -1,5 +1,5 @@
 import MainLayout from "@/layout/MainLayout";
-import Home from "@/pages/home/Home";
+import Home from "@/page-components/home/Home";
 
 
 

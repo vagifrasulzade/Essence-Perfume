@@ -3,7 +3,7 @@
 import { type Product, products as seedProducts, convertApiProductToProduct } from "@/lib/products"
 import { productApi } from "@/lib/api"
 import { useState, useEffect } from "react"
-import { ProductCard } from "@/pages/components/ProductCard"
+import { ProductCard } from "@/page-components/components/ProductCard"
 
 export default function Sale() {
   const [products, setProducts] = useState<Product[]>([])

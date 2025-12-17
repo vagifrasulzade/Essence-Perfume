@@ -11,7 +11,7 @@ import { useCart } from "@/context/cart-context"
 import { useFavorites } from "@/context/favorites-context"
 import { useAuth } from "@/context/auth-context"
 import { Button } from "./ui/button"
-import { ProductCard } from "@/pages/components/ProductCard"
+import { ProductCard } from "@/page-components/components/ProductCard"
 
 export default function ProductDetail({ product, productId }: { product?: ProductType; productId?: string }) {
   const { addItem,updateQuantity } = useCart()
