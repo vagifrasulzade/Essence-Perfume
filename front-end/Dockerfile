@@ -18,21 +18,17 @@ RUN npm run build
 FROM node:20-alpine AS runtime
 WORKDIR /app
 
-# Copy package files and install production dependencies only
-COPY package*.json ./
-RUN npm install --production
-
-# Copy built application from build stage
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/next.config.ts ./next.config.ts
-
 # Set environment to production
 ENV NODE_ENV=production
+
+# Copy the standalone build output
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/public ./public
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"]
+# Start the application using the standalone server
+CMD ["node", "server.js"]
 
