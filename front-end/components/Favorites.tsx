@@ -5,7 +5,7 @@ import { ProductCard } from "@/page-components/components/ProductCard"
 import { Heart } from "lucide-react"
 import Link from "next/link"
 import { Button } from "./ui/button"
-import { Product, convertApiProductToProduct, products as seedProducts } from "@/lib/products"
+import { Product, convertApiProductToProduct } from "@/lib/products"
 import { useFavorites } from "@/context/favorites-context"
 import { productApi } from "@/lib/api"
 import type { ApiProduct } from "@/lib/products"
@@ -29,22 +29,18 @@ export default function Favorites() {
       setError(null)
 
       try {
-        // Separate numeric IDs (API) and string IDs (seed products)
+        // Get all favorite IDs as numbers (all products should be from API now)
         const numericIds: number[] = []
-        const stringIds: string[] = []
         
         favorites.forEach((id) => {
           const numId = parseInt(id, 10)
           if (!isNaN(numId)) {
             numericIds.push(numId)
-          } else {
-            stringIds.push(id)
           }
         })
 
-        // Fetch products from API (for numeric IDs)
+        // Fetch products from API
         let apiProducts: Product[] = []
-        const failedNumericIds: number[] = []
         
         if (numericIds.length > 0) {
           const productPromises = numericIds.map(async (id) => {
@@ -53,7 +49,6 @@ export default function Favorites() {
               return apiProduct ? convertApiProductToProduct(apiProduct) : null
             } catch (err) {
               console.warn(`Failed to load product ${id} from API:`, err)
-              failedNumericIds.push(id)
               return null
             }
           })
@@ -62,22 +57,7 @@ export default function Favorites() {
           apiProducts = apiResults.filter((product): product is Product => product !== null)
         }
 
-        // Get products from seed products (for string IDs)
-        const seedProductsList = stringIds
-          .map((id) => seedProducts.find((p) => p.id === id))
-          .filter((product): product is Product => product !== undefined)
-
-        // Also check seed products for failed numeric IDs (in case they exist in products.ts)
-        const failedSeedProducts = failedNumericIds
-          .map((id) => seedProducts.find((p) => p.id === String(id)))
-          .filter((product): product is Product => product !== undefined)
-
-        // Merge API and seed products, removing duplicates
-        const apiProductIds = new Set(apiProducts.map(p => p.id))
-        const uniqueSeedProducts = [...seedProductsList, ...failedSeedProducts].filter(
-          p => !apiProductIds.has(p.id)
-        )
-        const mergedProducts = [...apiProducts, ...uniqueSeedProducts]
+        const mergedProducts = apiProducts
 
         setFavoriteProducts(mergedProducts)
         

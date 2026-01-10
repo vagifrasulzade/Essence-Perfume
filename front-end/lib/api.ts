@@ -99,6 +99,7 @@ export interface ProductCreateDTO {
   reviews: number;
   rating: number;
   featured: boolean;
+  discountPercentage?: number;
   top: string[];
   heart: string[];
   base: string[];
@@ -122,6 +123,7 @@ export interface ProductUpdateDTO {
   reviews: number;
   rating: number;
   featured: boolean;
+  discountPercentage?: number;
   top: string[];
   heart: string[];
   base: string[];
@@ -179,12 +181,13 @@ export const productApi = {
     return response.json();
   },
 
-  getAll: async (page: number = 1, pageSize: number = 10, search?: string): Promise<PaginationResponse<ApiProduct>> => {
+  getAll: async (page: number = 1, pageSize: number = 10, search?: string, featured?: boolean): Promise<PaginationResponse<ApiProduct>> => {
     const params = new URLSearchParams({
       page: page.toString(),
       pageSize: pageSize.toString(),
     });
     if (search) params.append("search", search);
+    if (featured !== undefined) params.append("featured", featured.toString());
     
     return apiCall<PaginationResponse<ApiProduct>>(`/admin/Product/All?${params.toString()}`);
   },

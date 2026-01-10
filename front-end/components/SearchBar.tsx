@@ -5,7 +5,7 @@ import Logo from './Logo';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import Link from 'next/link';
 import Image from 'next/image';
-import { products as seedProducts, convertApiProductToProduct, type Product } from '@/lib/products';
+import { convertApiProductToProduct, type Product } from '@/lib/products';
 import { productApi } from '@/lib/api';
 
 interface SearchModalProps {
@@ -53,42 +53,13 @@ export default function SearchBar ({ open, onClose }: SearchModalProps) {
             apiProducts = apiResult.items.map(convertApiProductToProduct)
           }
         } catch (apiError) {
-          console.warn("API products failed, using seed products:", apiError)
+          console.warn("API products failed:", apiError)
         }
         
-        // If search query exists, filter seed products too
-        let filteredSeedProducts = seedProducts
-        if (search) {
-          const searchLower = search.toLowerCase()
-          filteredSeedProducts = seedProducts.filter(p => 
-            p.name.toLowerCase().includes(searchLower) ||
-            p.brand.toLowerCase().includes(searchLower) ||
-            p.gender.toLowerCase().includes(searchLower) ||
-            (p.description && p.description.toLowerCase().includes(searchLower))
-          )
-        }
-        
-        // Merge API products with seed products (remove duplicates)
-        const apiProductIds = new Set(apiProducts.map(p => p.id))
-        const uniqueSeedProducts = filteredSeedProducts.filter(p => !apiProductIds.has(p.id))
-        const mergedProducts = [...apiProducts, ...uniqueSeedProducts]
-        
-        setResults(mergedProducts)
+        setResults(apiProducts)
       } catch (error) {
         console.error("Error loading products:", error)
-        // Fallback to seed products on error
-        if (debouncedQuery.trim()) {
-          const searchLower = debouncedQuery.toLowerCase()
-          const filtered = seedProducts.filter(p => 
-            p.name.toLowerCase().includes(searchLower) ||
-            p.brand.toLowerCase().includes(searchLower) ||
-            p.gender.toLowerCase().includes(searchLower) ||
-            (p.description && p.description.toLowerCase().includes(searchLower))
-          )
-          setResults(filtered)
-        } else {
-          setResults(seedProducts)
-        }
+        setResults([])
       } finally {
         setLoading(false)
       }

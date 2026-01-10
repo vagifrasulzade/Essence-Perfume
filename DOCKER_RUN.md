@@ -28,7 +28,7 @@ docker-compose logs -f
 ## 🔗 Əlçatan URL-lər
 
 - **Frontend (Next.js)**: http://localhost:3000
-- **Backend (ASP.NET Core API)**: http://localhost:5034
+- **Backend (ASP.NET Core API)**: http://localhost:5000
 - **Database (MSSQL)**: localhost:1433
   - Username: `sa`
   - Password: `Salam123!@`
@@ -98,7 +98,7 @@ docker-compose logs backend
 
 ### Port artıq istifadə olunur?
 
-Əgər 3000, 5034 və ya 1433 portları məşğuldursa, docker-compose.yml faylında portları dəyişdirin:
+Əgər 3000, 5000 və ya 1433 portları məşğuldursa, docker-compose.yml faylında portları dəyişdirin:
 
 ```yaml
 ports:

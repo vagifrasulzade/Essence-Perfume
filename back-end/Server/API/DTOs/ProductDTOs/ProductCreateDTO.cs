@@ -14,7 +14,7 @@ public class ProductCreateDTO
 
     public double Rating { get; set; }
     public bool Featured { get; set; }
-
+    public decimal DiscountPercentage { get; set; } = 0;
 
     // Product Notes
     public List<string> Top { get; set; } = new();
@@ -22,7 +22,7 @@ public class ProductCreateDTO
     public List<string> Base { get; set; } = new();
 
     // Images
-    public ICollection<ProductImageCreateDTO> Images  { get; set; } = new List<ProductImageCreateDTO>();
+    public ICollection<ProductImageCreateDTO> Images { get; set; } = new List<ProductImageCreateDTO>();
 
     // Volumes
     public ICollection<ProductVolumeCreateDTO> Volumes { get; set; } = new List<ProductVolumeCreateDTO>();

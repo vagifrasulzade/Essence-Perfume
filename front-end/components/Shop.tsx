@@ -1,6 +1,6 @@
 "use client"
 
-import { type Product, products as seedProducts, convertApiProductToProduct } from "@/lib/products"
+import { type Product, convertApiProductToProduct } from "@/lib/products"
 import { productApi } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 
@@ -117,26 +117,13 @@ export default function Shop() {
           
         } catch (apiError) {
           console.error("❌ API products failed:", apiError)
-          console.warn("Using only seed products")
         }
         
-        // Merge API products with seed products
-        // Remove duplicates (same ID) - API products take priority
-        const apiProductIds = new Set(apiProducts.map(p => p.id))
-        const uniqueSeedProducts = seedProducts.filter(p => !apiProductIds.has(p.id))
-        const mergedProducts = [...apiProducts, ...uniqueSeedProducts]
-        
-        console.log("📦 Final merged products:", {
-          apiProducts: apiProducts.length,
-          uniqueSeedProducts: uniqueSeedProducts.length,
-          total: mergedProducts.length
-        })
-        
-        setProducts(mergedProducts)
+        console.log("📦 Total products loaded:", apiProducts.length)
+        setProducts(apiProducts)
       } catch (error: any) {
         console.error("Error loading products:", error)
-        // Fallback to seed products on error
-        setProducts(seedProducts)
+        setProducts([])
       } finally {
         setLoading(false)
       }

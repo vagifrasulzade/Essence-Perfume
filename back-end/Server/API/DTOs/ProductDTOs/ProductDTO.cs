@@ -12,6 +12,7 @@ public class ProductDTO
     public int Reviews { get; set; }
     public double Rating { get; set; }
     public bool Featured { get; set; }
+    public decimal DiscountPercentage { get; set; }
 
     // Notes
     public List<string> Top { get; set; } = new();

@@ -37,6 +37,7 @@ export default function AddProduct() {
     heartNotes: "",
     baseNotes: "",
     featured: false,
+    discountPercentage: "0",
   })
 
 
@@ -160,6 +161,7 @@ export default function AddProduct() {
         reviews: Number(formData.reviews || 0),
         rating: Number(formData.rating || 0),
         featured: Boolean(formData.featured),
+        discountPercentage: Number(formData.discountPercentage || 0),
         top: topNotes,
         heart: heartNotes,
         base: baseNotes,
@@ -383,6 +385,23 @@ export default function AddProduct() {
                 className="h-4 w-4"
               />
               <Label htmlFor="featured" className="cursor-pointer">Mark as Featured</Label>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="discountPercentage">Discount Percentage (%)</Label>
+              <Input
+                id="discountPercentage"
+                type="number"
+                min="0"
+                max="100"
+                step="0.1"
+                value={formData.discountPercentage}
+                onChange={(e) => setFormData({ ...formData, discountPercentage: e.target.value })}
+                placeholder="e.g., 20 for 20% off"
+              />
+              <p className="text-xs text-muted-foreground">
+                Enter discount percentage (0-100). This will reduce the product prices by the specified percentage.
+              </p>
             </div>
           </CardContent>
         </Card>

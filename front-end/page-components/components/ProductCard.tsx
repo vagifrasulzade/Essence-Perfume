@@ -4,8 +4,10 @@ import Link from "next/link"
 import Image from "next/image"
 import { Heart, Star } from "lucide-react"
 import type { Product } from "@/lib/products"
+import { calculateDiscountedPrice } from "@/lib/products"
 import { useFavorites } from "@/context/favorites-context"
 import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 
 interface ProductCardProps {
   product: Product
@@ -19,12 +21,18 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const GenderClass = product.gender ? `category-${product.gender}` : ""
 
-  const derivedPrice = (() => {
+  const discountPercentage = product.discountPercentage || 0
+  
+  const originalPrice = (() => {
     if (typeof product.price === "number") return product.price
     const prices = product.volumes?.map(v => v.price) ?? []
     if (prices.length === 0) return undefined
     return Math.min(...prices)
   })()
+  
+  const discountedPrice = originalPrice !== undefined && discountPercentage > 0
+    ? calculateDiscountedPrice(originalPrice, discountPercentage)
+    : originalPrice
 
   return (
     <div className={cn("group relative", GenderClass)}>
@@ -36,6 +44,11 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
+          {discountPercentage > 0 && (
+            <Badge className="absolute top-2 left-2 bg-red-500 text-white">
+              -{discountPercentage}%
+            </Badge>
+          )}
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
               <span className="text-white font-semibold">Out of Stock</span>
@@ -86,8 +99,17 @@ export function ProductCard({ product }: ProductCardProps) {
           <span className="text-xs text-muted-foreground">({product.reviews})</span>
         </div>
         <div className="flex items-center gap-2">
-          {typeof derivedPrice === "number" ? (
-            <p className="font-semibold">${derivedPrice.toFixed(2)}</p>
+          {typeof discountedPrice === "number" ? (
+            <div className="flex items-center gap-2">
+              <p className={cn("font-semibold", discountPercentage > 0 && "text-primary")}>
+                ${discountedPrice.toFixed(2)}
+              </p>
+              {discountPercentage > 0 && originalPrice !== undefined && originalPrice !== discountedPrice && (
+                <p className="text-sm text-muted-foreground line-through">
+                  ${originalPrice.toFixed(2)}
+                </p>
+              )}
+            </div>
           ) : (
             <p className="text-sm text-muted-foreground">Price unavailable</p>
           )}

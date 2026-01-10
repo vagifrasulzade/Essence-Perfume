@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { productApi } from "@/lib/api"
 import type { ApiProduct } from "@/lib/products"
-import { products as seedProducts, convertApiProductToProduct } from "@/lib/products"
+import { convertApiProductToProduct } from "@/lib/products"
 import { Plus, Edit, Trash2, Star, RotateCcw } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -35,77 +35,14 @@ export default function AdminProducts() {
           }
         }
       } catch (apiError) {
-        console.warn("API products failed, using seed products:", apiError)
+        console.warn("API products failed:", apiError)
       }
       
-      // Convert seed products to ApiProduct format and merge with API products
-      const seedApiProducts: ApiProduct[] = seedProducts.map(product => ({
-        id: parseInt(product.id, 10) || 0,
-        name: product.name,
-        brand: product.brand,
-        description: product.description,
-        gender: product.gender as "men" | "women" | "kid",
-        reviews: product.reviews,
-        rating: product.rating,
-        featured: product.featured,
-        images: product.images.map((url, index) => ({
-          id: index + 1,
-          url: url,
-          publicId: null,
-          sort: index + 1
-        })),
-        volumes: product.volumes.map((vol, index) => ({
-          id: index + 1,
-          size: vol.size,
-          price: vol.price,
-          stock: vol.stock
-        })),
-        top: product.notes?.top || [],
-        heart: product.notes?.heart || [],
-        base: product.notes?.base || []
-      }))
-      
-      // Remove duplicates (same ID) - API products take priority
-      const apiProductIds = new Set(apiProducts.map(p => p.id))
-      const uniqueSeedProducts = seedApiProducts.filter(p => !apiProductIds.has(p.id))
-      const mergedProducts = [...apiProducts, ...uniqueSeedProducts]
-      
-      setProductList(mergedProducts)
-      
-      // Update total pages if needed
-      if (apiProducts.length === 0 && mergedProducts.length > 0) {
-        setTotalPages(Math.ceil(mergedProducts.length / 10))
-      }
+      setProductList(apiProducts)
     } catch (error: any) {
       console.error("Error loading products:", error)
-      // Fallback to seed products
-      const seedApiProducts: ApiProduct[] = seedProducts.map(product => ({
-        id: parseInt(product.id, 10) || 0,
-        name: product.name,
-        brand: product.brand,
-        description: product.description,
-        gender: product.gender as "men" | "women" | "kid",
-        reviews: product.reviews,
-        rating: product.rating,
-        featured: product.featured,
-        images: product.images.map((url, index) => ({
-          id: index + 1,
-          url: url,
-          publicId: null,
-          sort: index + 1
-        })),
-        volumes: product.volumes.map((vol, index) => ({
-          id: index + 1,
-          size: vol.size,
-          price: vol.price,
-          stock: vol.stock
-        })),
-        top: product.notes?.top || [],
-        heart: product.notes?.heart || [],
-        base: product.notes?.base || []
-      }))
-      setProductList(seedApiProducts)
-      setTotalPages(Math.ceil(seedApiProducts.length / 10))
+      setProductList([])
+      setTotalPages(1)
     } finally {
       setLoading(false)
     }

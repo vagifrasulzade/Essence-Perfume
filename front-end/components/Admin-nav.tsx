@@ -1,4 +1,4 @@
-import { LayoutDashboard, LogOut, Package, ShoppingBag, MessageSquare } from "lucide-react";
+import { LayoutDashboard, LogOut, Package, ShoppingBag, MessageSquare, Tag } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/context/auth-context";
 import { usePathname } from "next/navigation";
@@ -11,6 +11,7 @@ export default function AdminNav() {
   const links = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/products", label: "Products", icon: Package },
+    { href: "/admin/sales", label: "Sales", icon: Tag },
     { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
     { href: "/admin/messages", label: "Messages", icon: MessageSquare },
   ]

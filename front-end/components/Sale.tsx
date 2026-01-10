@@ -1,6 +1,6 @@
 "use client"
 
-import { type Product, products as seedProducts, convertApiProductToProduct } from "@/lib/products"
+import { type Product, convertApiProductToProduct } from "@/lib/products"
 import { productApi } from "@/lib/api"
 import { useState, useEffect } from "react"
 import { ProductCard } from "@/page-components/components/ProductCard"
@@ -42,27 +42,17 @@ export default function Sale() {
           
         } catch (apiError) {
           console.error("API products failed:", apiError)
-          console.warn("Using only seed products")
         }
         
-        // Merge API products with seed products
-        const apiProductIds = new Set(apiProducts.map(p => p.id))
-        const uniqueSeedProducts = seedProducts.filter(p => !apiProductIds.has(p.id))
-        const mergedProducts = [...apiProducts, ...uniqueSeedProducts]
-        
-        // Filter for sale items (products with discount > 0 or rating > 4.5)
-        const saleProducts = mergedProducts.filter(product => {
-          // You can customize this logic based on your product structure
-          // For now, showing high-rated products as featured sale items
-          return (product.rating ?? 0) >= 4.5
+        // Filter for sale items (products with discount > 0)
+        const saleProducts = apiProducts.filter(product => {
+          return (product.discountPercentage ?? 0) > 0
         })
         
         setProducts(saleProducts)
       } catch (error: any) {
         console.error("Error loading products:", error)
-        // Fallback to seed products on error, filter for sale
-        const saleProducts = seedProducts.filter(p => (p.rating ?? 0) >= 4.5)
-        setProducts(saleProducts)
+        setProducts([])
       } finally {
         setLoading(false)
       }

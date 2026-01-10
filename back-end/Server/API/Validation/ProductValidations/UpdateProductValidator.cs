@@ -8,12 +8,16 @@ public class UpdateProductValidator : AbstractValidator<ProductUpdateDTO>
     public UpdateProductValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Product name is required.")
-            .MaximumLength(100).WithMessage("Product name cannot exceed 100 characters.");
+            .NotEmpty().When(x => !string.IsNullOrEmpty(x.Name))
+            .WithMessage("Product name cannot be empty if provided.")
+            .MaximumLength(100).When(x => !string.IsNullOrEmpty(x.Name))
+            .WithMessage("Product name cannot exceed 100 characters.");
 
         RuleFor(x => x.Brand)
-            .NotEmpty().WithMessage("Brand is required.")
-            .MaximumLength(50).WithMessage("Brand cannot exceed 50 characters.");
+            .NotEmpty().When(x => !string.IsNullOrEmpty(x.Brand))
+            .WithMessage("Brand cannot be empty if provided.")
+            .MaximumLength(50).When(x => !string.IsNullOrEmpty(x.Brand))
+            .WithMessage("Brand cannot exceed 50 characters.");
 
         RuleFor(x => x.Gender)
             .IsInEnum().WithMessage("Gender is not valid.");

@@ -21,15 +21,15 @@ public class ProductService : IProductService
 
     public async Task<ProductDTO?> CreateAsync(ProductCreateDTO dto)
     {
-        if(dto is null) throw new ArgumentNullException(nameof(dto));
-        
+        if (dto is null) throw new ArgumentNullException(nameof(dto));
+
         var product = _mapper.Map<Product>(dto);
         product.IsDeleted = false;
-        
+
         // Create notes - EF Core will set ProductId automatically via One-to-One relationship
         var notes = CreateNotes(dto.Top, dto.Heart, dto.Base);
         product.Notes = notes;
-        
+
         try
         {
             await _db.Products.AddAsync(product);
@@ -46,31 +46,31 @@ public class ProductService : IProductService
             }
             throw new Exception(fullMessage, dbEx);
         }
-        
+
         return _mapper.Map<ProductDTO>(await GetProductWithIncludesAsync(product.Id));
     }
 
     public async Task<ProductDTO?> UpdateAsync(int id, ProductUpdateDTO dto)
     {
-        if(dto is null) throw new ArgumentNullException(nameof(dto));
-        
+        if (dto is null) throw new ArgumentNullException(nameof(dto));
+
         var product = await GetProductWithIncludesAsync(id);
         if (product == null || product.IsDeleted.GetValueOrDefault())
             throw new NullReferenceException($"Product with id {id} not found!");
-        
+
         // Update basic product info
         _mapper.Map(dto, product);
         product.UpdatedAt = DateTimeOffset.UtcNow;
-        
+
         // Update notes
         UpdateNotes(product, id, dto.Top, dto.Heart, dto.Base);
-        
+
         // Save basic updates first
         await _db.SaveChangesAsync();
-        
+
         // Now handle images and volumes separately with clean context
         await UpdateImagesAndVolumesAsync(id, dto.Images, dto.Volumes);
-        
+
         return _mapper.Map<ProductDTO>(await GetProductWithIncludesAsync(id));
     }
 
@@ -80,7 +80,7 @@ public class ProductService : IProductService
         var product = await CheckProductAsync(id, includeDeleted: true);
         if (!product.IsDeleted.GetValueOrDefault())
             throw new InvalidOperationException("Product is not deleted");
-        
+
         product.IsDeleted = false;
         product.DeletedAt = null;
         await _db.SaveChangesAsync();
@@ -110,22 +110,22 @@ public class ProductService : IProductService
         return product.Featured;
     }
 
-    
+
     // User
 
     public async Task<PaginationListDTO<ProductDTO>> GetAllAsync(ProductRequestDTO request)
     {
-        var query = BuildQuery(request.Search);
+        var query = BuildQuery(request.Search, request.Featured);
         var totalCount = await query.CountAsync();
-        
+
         var products = await query
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
             .ApplyIncludes()
             .ToListAsync();
-        
+
         return new PaginationListDTO<ProductDTO>(
-            _mapper.Map<List<ProductDTO>>(products), 
+            _mapper.Map<List<ProductDTO>>(products),
             new PaginationMeta(request.Page, request.PageSize, totalCount));
     }
 
@@ -134,7 +134,7 @@ public class ProductService : IProductService
         var query = BuildQuery(null);
         if (!string.IsNullOrWhiteSpace(brand)) query = query.Where(p => p.Brand == brand);
         if (!string.IsNullOrWhiteSpace(name)) query = query.Where(p => p.Name == name);
-        
+
         var product = await query.ApplyIncludes().FirstOrDefaultAsync();
         return product == null ? null : _mapper.Map<ProductDTO>(product);
     }
@@ -145,7 +145,7 @@ public class ProductService : IProductService
             .Where(p => p.Id == id)
             .ApplyIncludes()
             .FirstOrDefaultAsync();
-        
+
         return product == null ? null : _mapper.Map<ProductDTO>(product);
     }
 
@@ -164,11 +164,13 @@ public class ProductService : IProductService
             .Include(p => p.Notes)
             .FirstOrDefaultAsync(p => p.Id == id);
 
-    private IQueryable<Product> BuildQuery(string? search)
+    private IQueryable<Product> BuildQuery(string? search, bool? featured = null)
     {
         var query = _db.Products.Where(p => p.IsDeleted != true).AsQueryable();
         if (!string.IsNullOrWhiteSpace(search))
             query = query.Where(p => p.Name.Contains(search.Trim()) || p.Brand.Contains(search.Trim()));
+        if (featured.HasValue)
+            query = query.Where(p => p.Featured == featured.Value);
         return query;
     }
 
@@ -199,20 +201,20 @@ public class ProductService : IProductService
         }
     }
 
-    private async Task UpdateImagesAndVolumesAsync(int productId, 
+    private async Task UpdateImagesAndVolumesAsync(int productId,
         ICollection<ProductImageUpdateDTO>? images, ICollection<ProductVolumeUpdateDTO>? volumes)
     {
         var now = DateTimeOffset.UtcNow;
-        
+
         // Delete using ExecuteDelete (no tracking, direct SQL)
         await _db.ProductImages
             .Where(i => i.ProductId == productId)
             .ExecuteDeleteAsync();
-        
+
         await _db.ProductVolume
             .Where(v => v.ProductId == productId)
             .ExecuteDeleteAsync();
-        
+
         // Clear any tracked entities
         _db.ChangeTracker.Clear();
 
@@ -251,7 +253,7 @@ public class ProductService : IProductService
             }
             await _db.ProductVolume.AddRangeAsync(newVolumes);
         }
-        
+
         // Save new entities
         await _db.SaveChangesAsync();
     }

@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app/publish ./
 
 # Set the port
-ENV ASPNETCORE_URLS=http://+:5034
-EXPOSE 5034
+ENV ASPNETCORE_URLS=http://+:5000
+EXPOSE 5000
 
 ENTRYPOINT ["dotnet", "API.dll"]

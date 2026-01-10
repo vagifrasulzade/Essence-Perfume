@@ -9,7 +9,6 @@ import { useAuth } from "@/context/auth-context"
 import { useCart } from "@/context/cart-context"
 import { Button } from "./ui/button"
 import { productApi } from "@/lib/api"
-import { products as seedProducts } from "@/lib/products"
 
 export default function Cart() {
   const { items, updateQuantity, removeItem, total } = useCart()
@@ -24,7 +23,7 @@ export default function Cart() {
     }
   }, [user, router])
 
-  // Load stock data from both API and products.ts for all products in cart
+  // Load stock data from API for all products in cart
   useEffect(() => {
     if (!user || items.length === 0) {
       return
@@ -35,9 +34,8 @@ export default function Cart() {
       
       for (const item of items) {
         const productId = parseInt(item.id, 10)
-        let foundStock = false
         
-        // Try to get stock from API first (for numeric IDs)
+        // Get stock from API (all products should be from API now)
         if (!isNaN(productId)) {
           try {
             const product = await productApi.getByIdPublic(productId)
@@ -47,22 +45,9 @@ export default function Cart() {
                 volumeMap[String(vol.size)] = vol.stock
               })
               stockMap[item.id] = volumeMap
-              foundStock = true
             }
           } catch (error) {
             console.warn(`Failed to load stock for product ${productId} from API:`, error)
-          }
-        }
-        
-        // If not found in API, try seed products (for string IDs or API failure)
-        if (!foundStock) {
-          const seedProduct = seedProducts.find((p) => p.id === item.id)
-          if (seedProduct && seedProduct.volumes) {
-            const volumeMap: Record<string, number> = {}
-            seedProduct.volumes.forEach((vol) => {
-              volumeMap[String(vol.size)] = vol.stock
-            })
-            stockMap[item.id] = volumeMap
           }
         }
       }

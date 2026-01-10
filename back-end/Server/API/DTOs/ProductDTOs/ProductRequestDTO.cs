@@ -7,4 +7,7 @@ public class ProductRequestDTO : PaginationRequest
 {
     [FromQuery(Name = "search")]
     public string? Search { get; set; }
+    
+    [FromQuery(Name = "featured")]
+    public bool? Featured { get; set; }
 }

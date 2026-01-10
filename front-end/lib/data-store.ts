@@ -1,33 +1,24 @@
 import type { Product } from "@/lib/products"
 import type { Order } from "@/lib/orders"
-import { products as defaultProducts } from "@/lib/products"
 import { mockOrders as defaultOrders } from "@/lib/orders"
 
 const PRODUCTS_KEY = "perfume_shop_products"
 const ORDERS_KEY = "perfume_shop_orders"
 
 // Products Management
+// Note: Products are now loaded from API, this function is kept for backward compatibility
 export const getProducts = (): Product[] => {
-  if (typeof window === "undefined") return defaultProducts
+  if (typeof window === "undefined") return []
 
   const storedRaw = localStorage.getItem(PRODUCTS_KEY)
 
-  // First-time init: seed and return defaults
+  // Return stored products or empty array
   if (!storedRaw) {
-    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(defaultProducts))
-    return defaultProducts
+    return []
   }
 
   const stored: Product[] = JSON.parse(storedRaw)
-
-  // Always use latest seeded products for seeded IDs, but keep any user-added products
-  const defaultIds = new Set(defaultProducts.map((p) => p.id))
-  const userAdded = stored.filter((p) => !defaultIds.has(p.id))
-  const merged = [...defaultProducts, ...userAdded]
-
-  // Persist merged so the UI stays consistent
-  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(merged))
-  return merged
+  return stored
 }
 
 export const saveProduct = (product: Product): void => {

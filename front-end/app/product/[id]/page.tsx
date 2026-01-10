@@ -5,7 +5,7 @@ import { useParams } from "next/navigation"
 import ProductDetail from "@/components/ProductDetail"
 import MainLayout from "@/layout/MainLayout"
 import { productApi } from "@/lib/api"
-import { convertApiProductToProduct, type Product, products as seedProducts } from "@/lib/products"
+import { convertApiProductToProduct, type Product } from "@/lib/products"
 
 export default function ProductPage() {
   const params = useParams()
@@ -38,15 +38,7 @@ export default function ProductPage() {
               loadedProduct = convertApiProductToProduct(apiProduct)
             }
           } catch (apiErr) {
-            console.warn("Failed to load product from API, trying seed products:", apiErr)
-          }
-        }
-
-        // If not found in API, try seed products
-        if (!loadedProduct) {
-          const seedProduct = seedProducts.find((p) => p.id === id)
-          if (seedProduct) {
-            loadedProduct = seedProduct
+            console.warn("Failed to load product from API:", apiErr)
           }
         }
 

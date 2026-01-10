@@ -29,10 +29,10 @@ services:
         condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5034
+      - ASPNETCORE_URLS=http://+:5000
       - ConnectionStrings__DefaultConnection=Server=perfume-sql,1433;Database=PerfumeDB;User Id=sa;Password=Salam123!@;TrustServerCertificate=True;
     ports:
-      - "5034:5034"
+      - "5000:5000"
     networks:
       - perfume-net
     restart: on-failure
@@ -47,7 +47,7 @@ services:
       - backend
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://localhost:5034/api
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
     ports:
       - "3000:3000"
     networks:

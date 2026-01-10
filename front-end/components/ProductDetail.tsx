@@ -5,7 +5,7 @@ import { Heart, Star, Truck, Shield, RotateCcw, ShoppingCart, Minus, Plus, Edit,
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { products as seedProducts, Product as ProductType, convertApiProductToProduct } from "@/lib/products"
+import { Product as ProductType, convertApiProductToProduct } from "@/lib/products"
 import { productApi } from "@/lib/api"
 import { useCart } from "@/context/cart-context"
 import { useFavorites } from "@/context/favorites-context"
@@ -21,6 +21,18 @@ export default function ProductDetail({ product, productId }: { product?: Produc
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const router = useRouter()
+
+  // Update quantity when volume changes to respect stock limit
+  useEffect(() => {
+    if (selectedVolume && !isAdmin) {
+      // Reset quantity to 1 or stock limit when volume changes
+      if (selectedVolume.stock > 0) {
+        setQuantity(1)
+      } else {
+        setQuantity(1) // Set to 1 even if out of stock (button will be disabled)
+      }
+    }
+  }, [selectedVolume?.size, isAdmin]) // Only depend on volume size, not quantity
 
   // Load related products from both API and seed products
   const [relatedProducts, setRelatedProducts] = useState<ProductType[]>([])
@@ -46,24 +58,10 @@ export default function ProductDetail({ product, productId }: { product?: Produc
           console.warn("Failed to load related products from API:", apiErr)
         }
 
-        // Get related products from seed products
-        const seedRelated = seedProducts
-          .filter((p) => p.gender === product.gender && p.id !== product.id)
-          .slice(0, 4)
-
-        // Merge and remove duplicates
-        const apiProductIds = new Set(apiRelatedProducts.map(p => p.id))
-        const uniqueSeedRelated = seedRelated.filter(p => !apiProductIds.has(p.id))
-        const merged = [...apiRelatedProducts, ...uniqueSeedRelated].slice(0, 4)
-
-        setRelatedProducts(merged)
+        setRelatedProducts(apiRelatedProducts)
       } catch (err) {
         console.error("Error loading related products:", err)
-        // Fallback to seed products only
-        const seedRelated = seedProducts
-          .filter((p) => p.gender === product.gender && p.id !== product.id)
-          .slice(0, 4)
-        setRelatedProducts(seedRelated)
+        setRelatedProducts([])
       } finally {
         setLoadingRelated(false)
       }
@@ -73,20 +71,11 @@ export default function ProductDetail({ product, productId }: { product?: Produc
   }, [product])
 
   if (!product) {
-    const availableIds = seedProducts.map((p) => p.id)
     return (
       <div className="min-h-screen flex flex-col">
         <main className="flex-1 container mx-auto px-4 py-20 text-center">
           <h1 className="font-serif text-3xl font-bold mb-4">Product Not Found</h1>
           <p className="text-muted-foreground mb-6">Attempted id: <strong>{productId || "(none)"}</strong></p>
-          <p className="text-muted-foreground mb-4">Available product ids:</p>
-          <div className="flex flex-wrap gap-2 justify-center mb-6">
-            {availableIds.map((pid) => (
-              <Button key={pid} size="sm" onClick={() => router.push(`/product/${pid}`)}>
-                {pid}
-              </Button>
-            ))}
-          </div>
           <Button onClick={() => router.push("/shop")}>Back to Shop</Button>
         </main>
       </div>
@@ -239,14 +228,22 @@ export default function ProductDetail({ product, productId }: { product?: Produc
                 {product.volumes.map((volume) => (
                   <button
                     key={volume.size}
-                    onClick={() => setSelectedVolume(volume)}
-                    disabled={volume.stock <= 0}
+                    onClick={() => {
+                      setSelectedVolume(volume)
+                      // Reset quantity to 1 or stock limit when volume changes
+                      if (!isAdmin && volume.stock > 0) {
+                        setQuantity(Math.min(1, volume.stock))
+                      } else if (!isAdmin && volume.stock <= 0) {
+                        setQuantity(1)
+                      }
+                    }}
+                    disabled={volume.stock <= 0 && !isAdmin}
                     className={cn(
                       "px-6 py-3 border-2 rounded-lg font-medium transition-colors",
                       selectedVolume?.size === volume.size
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border hover:border-primary",
-                      volume.stock <= 0 ? "opacity-50 cursor-not-allowed" : ""
+                      volume.stock <= 0 && !isAdmin ? "opacity-50 cursor-not-allowed" : ""
                     )}
                   >
                     <div className="font-semibold">{volume.size}ml</div>
@@ -286,7 +283,9 @@ export default function ProductDetail({ product, productId }: { product?: Produc
                       if (isAdmin) {
                         setQuantity(quantity + 1)
                       } else {
-                        setQuantity(Math.min(selectedVolume?.stock || 1, quantity + 1))
+                        if (selectedVolume && quantity < selectedVolume.stock) {
+                          setQuantity(quantity + 1)
+                        }
                       }
                     }}
                     disabled={!isAdmin && (!selectedVolume || quantity >= selectedVolume.stock)}
@@ -298,8 +297,12 @@ export default function ProductDetail({ product, productId }: { product?: Produc
                     <Plus className="h-4 w-4" />
                   </button>
                 </div>
-                {!isAdmin && selectedVolume && quantity >= selectedVolume.stock && (
-                  <span className="text-sm text-muted-foreground">Max quantity reached</span>
+                {!isAdmin && selectedVolume && (
+                  quantity >= selectedVolume.stock ? (
+                    <span className="text-sm text-red-600 font-medium">Max quantity reached ({selectedVolume.stock})</span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">Available: {selectedVolume.stock - quantity} left</span>
+                  )
                 )}
                 {isAdmin && (
                   <span className="text-sm text-amber-600 dark:text-amber-400 font-medium">

@@ -31,7 +31,7 @@ public class OrderService : IOrderService
         var firstName = dto.Shipping.FirstName?.Trim() ?? "";
         var lastName = dto.Shipping.LastName?.Trim() ?? "";
         var email = dto.Shipping.Email?.Trim() ?? "";
-        
+
         if (string.IsNullOrWhiteSpace(firstName)) throw new Exception("FirstName is required");
         if (string.IsNullOrWhiteSpace(lastName)) throw new Exception("LastName is required");
         if (string.IsNullOrWhiteSpace(email)) throw new Exception("Email is required");
@@ -66,7 +66,7 @@ public class OrderService : IOrderService
             total += volume.Price * itemDto.Quantity;
 
             var firstImage = product.Images.OrderBy(img => img.Sort).FirstOrDefault()?.Url ?? "";
-            
+
             // Ensure all required string fields are not null or empty
             if (string.IsNullOrWhiteSpace(product.Name))
                 throw new Exception($"Product {itemDto.ProductId} has no name");
@@ -109,7 +109,7 @@ public class OrderService : IOrderService
             throw new Exception("CustomerEmail is required");
 
         await _db.Orders.AddAsync(order);
-        
+
         try
         {
             await _db.SaveChangesAsync();
@@ -150,7 +150,7 @@ public class OrderService : IOrderService
             .Take(request.PageSize)
             .ToListAsync();
 
-        return new PaginationListDTO<OrderDTO>(_mapper.Map<List<OrderDTO>>(orders), 
+        return new PaginationListDTO<OrderDTO>(_mapper.Map<List<OrderDTO>>(orders),
             new PaginationMeta(request.Page, request.PageSize, totalCount));
     }
 

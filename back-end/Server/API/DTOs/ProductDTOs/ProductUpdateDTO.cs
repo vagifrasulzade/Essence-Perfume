@@ -2,12 +2,14 @@
 
 public class ProductUpdateDTO
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public string? Description { get; set; }
-    public string Brand { get; set; }
+    public string? Brand { get; set; }
     public API.Models.Enums.Gender Gender { get; set; }
     public int Reviews { get; set; }
     public double Rating { get; set; }
+    public bool Featured { get; set; }
+    public decimal DiscountPercentage { get; set; } = 0;
 
     // Product Notes
     public List<string> Top { get; set; } = new();

@@ -14,6 +14,7 @@ public class Product : BaseEntity
 
     public double Rating { get; set; }
     public bool Featured { get; set; }
+    public decimal DiscountPercentage { get; set; } = 0; // Sale discount percentage (0-100)
 
     public ProductNotes Notes { get; set; }
 

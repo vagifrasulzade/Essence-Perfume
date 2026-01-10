@@ -24,10 +24,17 @@ WORKDIR /app
 
 # Set environment to production
 ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 # Copy the standalone build output
+# Next.js standalone output includes server.js and all dependencies in .next/standalone
 COPY --from=build /app/.next/standalone ./
+
+# Copy static files to the correct location (standalone build expects them in .next/static)
 COPY --from=build /app/.next/static ./.next/static
+
+# Copy public folder (standalone build expects it in public/)
 COPY --from=build /app/public ./public
 
 # Expose port 3000

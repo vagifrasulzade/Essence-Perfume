@@ -41,6 +41,7 @@ export default function EditProduct() {
     heartNotes: "",
     baseNotes: "",
     featured: false,
+    discountPercentage: "0",
   })
 
   useEffect(() => {
@@ -67,6 +68,7 @@ export default function EditProduct() {
             heartNotes: (product.heart || product.notes?.heart || []).join(", ") || "",
             baseNotes: (product.base || product.notes?.base || []).join(", ") || "",
             featured: product.featured || false,
+            discountPercentage: String(product.discountPercentage ?? 0),
           })
           
           if (product.images && product.images.length > 0) {
@@ -156,10 +158,6 @@ export default function EditProduct() {
 
   const updateVolume = (index: number, field: keyof VolumeRow, value: any) => {
     const updatedVolumes = volumes.map((v, i) => (i === index ? { ...v, [field]: value } : v))
-    // Sort by size when size is updated
-    if (field === "size") {
-      updatedVolumes.sort((a, b) => a.size - b.size)
-    }
     setVolumes(updatedVolumes)
   }
 
@@ -217,6 +215,7 @@ export default function EditProduct() {
         reviews: Number(formData.reviews || 0),
         rating: Number(formData.rating || 0),
         featured: Boolean(formData.featured),
+        discountPercentage: Number(formData.discountPercentage || 0),
         top: topNotes,
         heart: heartNotes,
         base: baseNotes,
@@ -234,10 +233,9 @@ export default function EditProduct() {
         })),
       }
 
-      console.log("Sending update data with notes:", {
-        top: topNotes,
-        heart: heartNotes,
-        base: baseNotes,
+      console.log("Sending update data:", {
+        volumes: cleanedVolumes,
+        volumesCount: cleanedVolumes.length,
         fullData: productData
       })
 
@@ -463,6 +461,23 @@ export default function EditProduct() {
               />
               <Label htmlFor="featured" className="cursor-pointer">Mark as Featured</Label>
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="discountPercentage">Discount Percentage (%)</Label>
+              <Input
+                id="discountPercentage"
+                type="number"
+                min="0"
+                max="100"
+                step="0.1"
+                value={formData.discountPercentage}
+                onChange={(e) => setFormData({ ...formData, discountPercentage: e.target.value })}
+                placeholder="e.g., 20 for 20% off"
+              />
+              <p className="text-xs text-muted-foreground">
+                Enter discount percentage (0-100). This will reduce the product prices by the specified percentage.
+              </p>
+            </div>
           </CardContent>
         </Card>
 
@@ -525,8 +540,11 @@ export default function EditProduct() {
                     <Input
                       type="number"
                       min="1"
-                      value={v.size}
-                      onChange={(e) => updateVolume(i, "size", Number(e.target.value))}
+                      value={v.size || ""}
+                      onChange={(e) => {
+                        const val = e.target.value === "" ? 0 : Number(e.target.value)
+                        updateVolume(i, "size", val)
+                      }}
                       placeholder="30"
                     />
                   </div>
@@ -535,8 +553,11 @@ export default function EditProduct() {
                       type="number"
                       min="0"
                       step="0.01"
-                      value={v.price}
-                      onChange={(e) => updateVolume(i, "price", Number(e.target.value))}
+                      value={v.price || ""}
+                      onChange={(e) => {
+                        const val = e.target.value === "" ? 0 : Number(e.target.value)
+                        updateVolume(i, "price", val)
+                      }}
                       placeholder="85"
                     />
                   </div>
@@ -544,8 +565,11 @@ export default function EditProduct() {
                     <Input
                       type="number"
                       min="0"
-                      value={Number(v.stock ?? 0)}
-                      onChange={(e) => updateVolume(i, "stock", Number(e.target.value))}
+                      value={v.stock ?? ""}
+                      onChange={(e) => {
+                        const val = e.target.value === "" ? 0 : Number(e.target.value)
+                        updateVolume(i, "stock", val)
+                      }}
                       placeholder="10"
                     />
                   </div>

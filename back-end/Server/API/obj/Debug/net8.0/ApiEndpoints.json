@@ -445,6 +445,11 @@
         "IsRequired": false
       },
       {
+        "Name": "featured",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
         "Name": "page",
         "Type": "System.Int32",
         "IsRequired": false
@@ -741,6 +746,11 @@
       {
         "Name": "search",
         "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "featured",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
       {
