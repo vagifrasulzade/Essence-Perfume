@@ -25,7 +25,7 @@ public class ProductDTO
     // Volumes
     public List<ProductVolumeDTO> Volumes { get; set; } = new();
 
- 
+
 }
 
 public class ProductImageDTO
@@ -43,5 +43,6 @@ public class ProductVolumeDTO
     public int Size { get; set; }
     public decimal Price { get; set; }
     public int Stock { get; set; }
+    public decimal DiscountPercentage { get; set; } = 0;
 }
 

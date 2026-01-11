@@ -40,7 +40,13 @@ public class CartService : ICartService
             var volume = cartItem.Product.Volumes.FirstOrDefault(v => v.Size == cartItem.Volume);
             if (volume == null) continue;
 
-            var price = volume.Price;
+            // Calculate price with volume-specific discount
+            decimal price = volume.Price;
+            if (volume.DiscountPercentage > 0)
+            {
+                price = volume.Price * (1 - volume.DiscountPercentage / 100m);
+            }
+
             var subtotal = price * cartItem.Quantity;
             total += subtotal;
             itemCount += cartItem.Quantity;
@@ -72,7 +78,7 @@ public class CartService : ICartService
         var product = await _db.Products
             .Include(p => p.Volumes)
             .FirstOrDefaultAsync(p => p.Id == item.ProductId && (p.IsDeleted == null || p.IsDeleted == false));
-        
+
         if (product == null)
             throw new KeyNotFoundException($"Product with id {item.ProductId} not found");
 
@@ -87,8 +93,8 @@ public class CartService : ICartService
 
         // Check if item already exists in cart
         var existingCartItem = await _db.Carts
-            .FirstOrDefaultAsync(c => c.UserId == userId 
-                && c.ProductId == item.ProductId 
+            .FirstOrDefaultAsync(c => c.UserId == userId
+                && c.ProductId == item.ProductId
                 && c.Volume == item.Volume
                 && (c.IsDeleted == null || c.IsDeleted == false));
 
@@ -122,8 +128,8 @@ public class CartService : ICartService
     public async Task<CartResponseDTO> RemoveItemAsync(int userId, int productId, int volume)
     {
         var cartItem = await _db.Carts
-            .FirstOrDefaultAsync(c => c.UserId == userId 
-                && c.ProductId == productId 
+            .FirstOrDefaultAsync(c => c.UserId == userId
+                && c.ProductId == productId
                 && c.Volume == volume
                 && (c.IsDeleted == null || c.IsDeleted == false));
 
@@ -146,8 +152,8 @@ public class CartService : ICartService
                 .ThenInclude(p => p.Volumes)
             .Include(c => c.Product)
                 .ThenInclude(p => p.Notes)
-            .FirstOrDefaultAsync(c => c.UserId == userId 
-                && c.ProductId == productId 
+            .FirstOrDefaultAsync(c => c.UserId == userId
+                && c.ProductId == productId
                 && c.Volume == volume
                 && (c.IsDeleted == null || c.IsDeleted == false));
 

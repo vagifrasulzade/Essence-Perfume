@@ -63,7 +63,15 @@ public class OrderService : IOrderService
             if (volume.Stock < itemDto.Quantity) throw new Exception("Insufficient stock");
 
             volume.Stock -= itemDto.Quantity;
-            total += volume.Price * itemDto.Quantity;
+
+            // Calculate price with volume-specific discount
+            decimal price = volume.Price;
+            if (volume.DiscountPercentage > 0)
+            {
+                price = volume.Price * (1 - volume.DiscountPercentage / 100m);
+            }
+
+            total += price * itemDto.Quantity;
 
             var firstImage = product.Images.OrderBy(img => img.Sort).FirstOrDefault()?.Url ?? "";
 
@@ -80,7 +88,7 @@ public class OrderService : IOrderService
                 Name = product.Name.Trim(),
                 Brand = product.Brand.Trim(),
                 Volume = volume.Size.ToString(),
-                Price = volume.Price,
+                Price = price,
                 Quantity = itemDto.Quantity,
                 Image = string.IsNullOrWhiteSpace(firstImage) ? "" : firstImage.Trim(),
                 CreatedAt = now

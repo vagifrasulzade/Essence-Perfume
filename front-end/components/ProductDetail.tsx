@@ -5,7 +5,7 @@ import { Heart, Star, Truck, Shield, RotateCcw, ShoppingCart, Minus, Plus, Edit,
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Product as ProductType, convertApiProductToProduct } from "@/lib/products"
+import { Product as ProductType, convertApiProductToProduct, calculateDiscountedPrice } from "@/lib/products"
 import { productApi } from "@/lib/api"
 import { useCart } from "@/context/cart-context"
 import { useFavorites } from "@/context/favorites-context"
@@ -111,7 +111,12 @@ export default function ProductDetail({ product, productId }: { product?: Produc
         id: product.id,
         name: product.name,
         brand: product.brand,
-        price: selectedVolume.price,
+        price: (() => {
+          const discountPercentage = selectedVolume.discountPercentage || 0
+          return discountPercentage > 0
+            ? calculateDiscountedPrice(selectedVolume.price, discountPercentage)
+            : selectedVolume.price
+        })(),
         volume: String(selectedVolume.size),
         image: product.images[0],
       })
@@ -215,9 +220,37 @@ export default function ProductDetail({ product, productId }: { product?: Produc
               <span className="text-muted-foreground">({product.reviews} reviews)</span>
             </div>
 
-            <p className="text-3xl font-bold mb-6">
-              ${selectedVolume ? selectedVolume.price.toFixed(2) : product.volumes[0]?.price.toFixed(2)}
-            </p>
+            <div className="mb-6">
+              {(() => {
+                const currentVolume = selectedVolume || product.volumes[0]
+                const originalPrice = currentVolume?.price || 0
+                const discountPercentage = currentVolume?.discountPercentage || 0
+                const discountedPrice = discountPercentage > 0 
+                  ? calculateDiscountedPrice(originalPrice, discountPercentage)
+                  : originalPrice
+                
+                return (
+                  <div className="flex items-center gap-3">
+                    <p className={cn(
+                      "text-3xl font-bold",
+                      discountPercentage > 0 && "text-primary"
+                    )}>
+                      ${discountedPrice.toFixed(2)}
+                    </p>
+                    {discountPercentage > 0 && (
+                      <>
+                        <p className="text-xl text-muted-foreground line-through">
+                          ${originalPrice.toFixed(2)}
+                        </p>
+                        <span className="px-2 py-1 bg-red-500 text-white text-sm font-semibold rounded">
+                          -{discountPercentage}%
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )
+              })()}
+            </div>
 
             <p className="text-muted-foreground mb-6">{product.description}</p>
 
@@ -247,7 +280,35 @@ export default function ProductDetail({ product, productId }: { product?: Produc
                     )}
                   >
                     <div className="font-semibold">{volume.size}ml</div>
-                    <div className="text-sm text-muted-foreground">${volume.price}</div>
+                    <div className="text-sm">
+                      {(() => {
+                        const discountPercentage = volume.discountPercentage || 0
+                        const discountedPrice = discountPercentage > 0
+                          ? calculateDiscountedPrice(volume.price, discountPercentage)
+                          : volume.price
+                        const isSelected = selectedVolume?.size === volume.size
+                        
+                        return (
+                          <div className="flex flex-col items-center">
+                            <span className={cn(
+                              "font-semibold",
+                              discountPercentage > 0 && !isSelected && "text-red-600",
+                              discountPercentage > 0 && isSelected && "text-white"
+                            )}>
+                              ${discountedPrice.toFixed(2)}
+                            </span>
+                            {discountPercentage > 0 && (
+                              <span className={cn(
+                                "text-xs line-through",
+                                isSelected ? "text-white/70" : "text-muted-foreground"
+                              )}>
+                                ${volume.price.toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+                        )
+                      })()}
+                    </div>
                   </button>
                 ))}
               </div>

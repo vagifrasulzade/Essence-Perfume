@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { productApi } from "@/lib/api"
 import type { ApiProduct } from "@/lib/products"
-import { convertApiProductToProduct } from "@/lib/products"
+import { convertApiProductToProduct, calculateDiscountedPrice } from "@/lib/products"
 import { Plus, Edit, Trash2, Star, RotateCcw } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -107,7 +107,17 @@ export default function AdminProducts() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {productList.map((product) => (
+            {productList.map((product) => {
+              // Debug: Log volumes to check discountPercentage
+              if (product.volumes && product.volumes.length > 0) {
+                console.log(`Product ${product.id} volumes:`, product.volumes.map(v => ({
+                  size: v.size,
+                  price: v.price,
+                  discountPercentage: v.discountPercentage
+                })))
+              }
+              
+              return (
               <Card key={product.id} className="overflow-hidden">
                 <div className="relative h-48 bg-accent">
                   <Image
@@ -138,7 +148,15 @@ export default function AdminProducts() {
               <div className="space-y-2 border-t pt-3">
                 <p className="text-xs font-semibold text-muted-foreground uppercase">Available Volumes</p>
                 <div className="grid grid-cols-2 gap-2">
-                  {product.volumes?.map((volume) => (
+                  {product.volumes?.map((volume) => {
+                    // Safely extract discountPercentage - handle both camelCase and PascalCase
+                    const rawDiscount = (volume as any).discountPercentage ?? (volume as any).DiscountPercentage ?? volume.discountPercentage ?? 0
+                    const discountPercentage = typeof rawDiscount === 'number' ? rawDiscount : (typeof rawDiscount === 'string' ? parseFloat(rawDiscount) || 0 : 0)
+                    const discountedPrice = discountPercentage > 0 && discountPercentage <= 100
+                      ? calculateDiscountedPrice(volume.price, discountPercentage)
+                      : volume.price
+                    
+                    return (
                     <div
                       key={volume.size}
                       className={`p-2 rounded-lg border-2 ${
@@ -156,9 +174,26 @@ export default function AdminProducts() {
                           {volume.stock > 0 ? `${volume.stock}` : "Out"}
                         </Badge>
                       </div>
-                      <p className="text-sm font-bold mt-1">${volume.price.toFixed(2)}</p>
+                      <div className="mt-1">
+                        <div className="flex flex-col">
+                          <p className="text-sm font-bold">
+                            ${discountedPrice.toFixed(2)}
+                            {discountPercentage > 0 && (
+                              <span className="ml-2 text-xs text-red-600 font-semibold">
+                                -{discountPercentage}%
+                              </span>
+                            )}
+                          </p>
+                          {discountPercentage > 0 && (
+                            <p className="text-xs text-muted-foreground line-through">
+                              ${volume.price.toFixed(2)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
 
@@ -166,8 +201,18 @@ export default function AdminProducts() {
                 <span className="text-sm text-muted-foreground">
                   {product.volumes && product.volumes.length > 0 ? (
                     <>
-                      Price range: ${Math.min(...product.volumes.map((v) => v.price)).toFixed(2)} - $
-                      {Math.max(...product.volumes.map((v) => v.price)).toFixed(2)}
+                      Price range: ${(Math.min(...product.volumes.map((v) => {
+                        const discountPercentage = v.discountPercentage || 0
+                        return discountPercentage > 0
+                          ? calculateDiscountedPrice(v.price, discountPercentage)
+                          : v.price
+                      }))).toFixed(2)} - $
+                      {(Math.max(...product.volumes.map((v) => {
+                        const discountPercentage = v.discountPercentage || 0
+                        return discountPercentage > 0
+                          ? calculateDiscountedPrice(v.price, discountPercentage)
+                          : v.price
+                      }))).toFixed(2)}
                     </>
                   ) : (
                     "No volumes available"
@@ -193,7 +238,8 @@ export default function AdminProducts() {
               </div>
             </CardContent>
           </Card>
-        ))}
+              )
+            })}
         </div>
         
         {totalPages > 1 && (

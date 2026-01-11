@@ -1,7 +1,8 @@
 "use client"
 
-import { type Product, convertApiProductToProduct } from "@/lib/products"
+import { type Product, convertApiProductToProduct, calculateDiscountedPrice } from "@/lib/products"
 import { productApi } from "@/lib/api"
+import type { ApiProduct } from "@/lib/products"
 import { useState, useEffect } from "react"
 import { ProductCard } from "@/page-components/components/ProductCard"
 
@@ -44,8 +45,17 @@ export default function Sale() {
           console.error("API products failed:", apiError)
         }
         
-        // Filter for sale items (products with discount > 0)
+        // Filter for sale items (products with volume-level discount > 0)
         const saleProducts = apiProducts.filter(product => {
+          // Check volume-level discounts
+          if (product.volumes && product.volumes.length > 0) {
+            return product.volumes.some(volume => {
+              const rawDiscount = (volume as any).discountPercentage ?? (volume as any).DiscountPercentage ?? volume.discountPercentage ?? 0
+              const volumeDiscount = typeof rawDiscount === 'number' ? rawDiscount : (typeof rawDiscount === 'string' ? parseFloat(rawDiscount) || 0 : 0)
+              return volumeDiscount > 0 && volumeDiscount <= 100
+            })
+          }
+          // Fallback to product-level discount
           return (product.discountPercentage ?? 0) > 0
         })
         

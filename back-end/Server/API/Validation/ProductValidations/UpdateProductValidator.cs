@@ -80,5 +80,9 @@ public class ProductVolumeUpdateValidator : AbstractValidator<ProductVolumeUpdat
 
         RuleFor(x => x.Stock)
             .GreaterThanOrEqualTo(0).WithMessage("Stock must be zero or positive.");
+
+        RuleFor(x => x.DiscountPercentage)
+            .GreaterThanOrEqualTo(0).WithMessage("Discount percentage must be zero or positive.")
+            .LessThanOrEqualTo(100).WithMessage("Discount percentage cannot exceed 100.");
     }
 }

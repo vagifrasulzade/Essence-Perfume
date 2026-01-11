@@ -11,6 +11,7 @@ export interface ApiProductVolume {
   size: number;
   price: number;
   stock: number;
+  discountPercentage?: number;
 }
 
 export interface ApiProductNotes {
@@ -52,7 +53,7 @@ export interface Product {
   featured: boolean;
   discountPercentage?: number;
   images: string[];
-  volumes: { size: number; price: number; stock: number }[];
+  volumes: { size: number; price: number; stock: number; discountPercentage?: number }[];
   notes: {
     top: string[];
     heart: string[];
@@ -77,6 +78,7 @@ export function convertApiProductToProduct(apiProduct: ApiProduct): Product {
       size: vol.size,
       price: vol.price,
       stock: vol.stock,
+      discountPercentage: vol.discountPercentage || 0,
     })),
     notes: {
       top: apiProduct.top || apiProduct.notes?.top || [],

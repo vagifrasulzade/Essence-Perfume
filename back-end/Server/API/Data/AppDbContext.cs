@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class AppDbContext:DbContext
+public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {}
+    { }
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Product> Products => Set<Product>();
@@ -22,7 +22,7 @@ public class AppDbContext:DbContext
     public DbSet<OrderShipping> OrderShippings => Set<OrderShipping>();
 
     public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
-    
+
     public DbSet<Cart> Carts => Set<Cart>();
     public DbSet<Favorite> Favorites => Set<Favorite>();
 
@@ -626,6 +626,10 @@ public class AppDbContext:DbContext
             .WithOne(i => i.Product)
             .HasForeignKey(i => i.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Ignore DiscountPercentage on Product (column doesn't exist in database)
+        modelBuilder.Entity<Product>()
+            .Ignore(p => p.DiscountPercentage);
 
         // Order - OrderItem (One-to-Many)
         modelBuilder.Entity<Order>()

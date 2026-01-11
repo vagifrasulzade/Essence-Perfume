@@ -73,5 +73,8 @@ public class ProductVolumeCreateValidator : AbstractValidator<ProductVolumeCreat
             .GreaterThan(0).WithMessage("Volume price must be greater than zero.");
         RuleFor(x => x.Stock)
             .GreaterThanOrEqualTo(0).WithMessage("Stock must be zero or greater.");
+        RuleFor(x => x.DiscountPercentage)
+            .GreaterThanOrEqualTo(0).WithMessage("Discount percentage must be zero or positive.")
+            .LessThanOrEqualTo(100).WithMessage("Discount percentage cannot exceed 100.");
     }
 }

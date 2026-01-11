@@ -20,14 +20,30 @@ export default function AdminSales() {
   const loadProducts = async () => {
     setLoading(true)
     try {
-      // Get featured (sale) products from API with featured filter
-      const itemsPerPage = 12
-      const result = await productApi.getAll(page, itemsPerPage, undefined, true)
+      // Get all products from API
+      const itemsPerPage = 100
+      const result = await productApi.getAll(page, itemsPerPage, undefined)
       
       if (result && result.items && Array.isArray(result.items)) {
-        setProductList(result.items)
+        // Filter products with discount (volume-level or product-level)
+        const saleProducts = result.items.filter(product => {
+          // Check volume-level discounts
+          if (product.volumes && product.volumes.length > 0) {
+            return product.volumes.some(volume => {
+              const rawDiscount = (volume as any).discountPercentage ?? (volume as any).DiscountPercentage ?? volume.discountPercentage ?? 0
+              const volumeDiscount = typeof rawDiscount === 'number' ? rawDiscount : (typeof rawDiscount === 'string' ? parseFloat(rawDiscount) || 0 : 0)
+              return volumeDiscount > 0 && volumeDiscount <= 100
+            })
+          }
+          // Fallback to product-level discount
+          return (product.discountPercentage ?? 0) > 0
+        })
+        
+        setProductList(saleProducts)
+        // Calculate total pages based on filtered products
         if (result.meta) {
-          setTotalPages(result.meta.totalPages || 1)
+          const filteredTotalPages = Math.ceil(saleProducts.length / 12) || 1
+          setTotalPages(filteredTotalPages)
         } else {
           setTotalPages(1)
         }
@@ -65,18 +81,9 @@ export default function AdminSales() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-4xl font-bold mb-2">Sale Products</h1>
-          <p className="text-muted-foreground">Manage featured sale products</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/admin/products/add">
-            <Button>
-              Add Product
-            </Button>
-          </Link>
-        </div>
+      <div>
+        <h1 className="font-serif text-4xl font-bold mb-2">Sale Products</h1>
+        <p className="text-muted-foreground">Manage products with discounts</p>
       </div>
 
       {loading ? (
@@ -85,7 +92,7 @@ export default function AdminSales() {
         </div>
       ) : productList.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No sale products found. Mark products as featured to show them here.</p>
+          <p className="text-muted-foreground">No sale products found. Products with discounts will appear here.</p>
         </div>
       ) : (
         <>
@@ -93,17 +100,51 @@ export default function AdminSales() {
             {productList.map((product) => {
               const convertedProduct = convertApiProductToProduct(product)
               const mainImage = product.images && product.images.length > 0 ? product.images[0].url : "/placeholder.svg"
-              const discountPercentage = product.discountPercentage || 0
               
-              const originalMinPrice = product.volumes && product.volumes.length > 0
-                ? Math.min(...product.volumes.map(v => Number(v.price)))
-                : 0
-              const originalMaxPrice = product.volumes && product.volumes.length > 0
-                ? Math.max(...product.volumes.map(v => Number(v.price)))
-                : 0
+              // Calculate prices with volume-level discounts
+              let originalMinPrice = 0
+              let originalMaxPrice = 0
+              let discountedMinPrice = 0
+              let discountedMaxPrice = 0
+              let maxDiscountPercentage = 0
               
-              const discountedMinPrice = calculateDiscountedPrice(originalMinPrice, discountPercentage)
-              const discountedMaxPrice = calculateDiscountedPrice(originalMaxPrice, discountPercentage)
+              if (product.volumes && product.volumes.length > 0) {
+                // Calculate discounted prices for each volume
+                const pricesWithDiscounts = product.volumes.map(v => {
+                  // Safely extract discountPercentage - handle both camelCase and PascalCase
+                  const rawDiscount = (v as any).discountPercentage ?? (v as any).DiscountPercentage ?? v.discountPercentage ?? 0
+                  const volumeDiscount = typeof rawDiscount === 'number' ? rawDiscount : (typeof rawDiscount === 'string' ? parseFloat(rawDiscount) || 0 : 0)
+                  const originalPrice = Number(v.price) || 0
+                  const discountedPrice = volumeDiscount > 0 && volumeDiscount <= 100 && originalPrice > 0
+                    ? calculateDiscountedPrice(originalPrice, volumeDiscount)
+                    : originalPrice
+                  
+                  // Track maximum discount percentage
+                  if (volumeDiscount > maxDiscountPercentage) {
+                    maxDiscountPercentage = volumeDiscount
+                  }
+                  
+                  return { originalPrice, discountedPrice }
+                }).filter(p => p.originalPrice > 0) // Filter out invalid prices
+                
+                if (pricesWithDiscounts.length > 0) {
+                  originalMinPrice = Math.min(...pricesWithDiscounts.map(p => p.originalPrice))
+                  originalMaxPrice = Math.max(...pricesWithDiscounts.map(p => p.originalPrice))
+                  discountedMinPrice = Math.min(...pricesWithDiscounts.map(p => p.discountedPrice))
+                  discountedMaxPrice = Math.max(...pricesWithDiscounts.map(p => p.discountedPrice))
+                }
+              }
+              
+              // Use volume-level discount if available, otherwise use product-level discount
+              const productLevelDiscount = typeof product.discountPercentage === 'number' ? product.discountPercentage : (typeof product.discountPercentage === 'string' ? parseFloat(product.discountPercentage) || 0 : 0)
+              const discountPercentage = maxDiscountPercentage > 0 ? maxDiscountPercentage : productLevelDiscount
+              
+              // If product-level discount exists and no volume discount, apply to min price
+              if (productLevelDiscount > 0 && maxDiscountPercentage === productLevelDiscount && discountedMinPrice === 0 && originalMinPrice > 0) {
+                discountedMinPrice = calculateDiscountedPrice(originalMinPrice, productLevelDiscount)
+              } else if (productLevelDiscount > 0 && maxDiscountPercentage === productLevelDiscount && discountedMinPrice === originalMinPrice && originalMinPrice > 0) {
+                discountedMinPrice = calculateDiscountedPrice(originalMinPrice, productLevelDiscount)
+              }
 
               return (
                 <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -144,17 +185,15 @@ export default function AdminSales() {
 
                       <div className="flex items-center justify-between">
                         <div>
-                          {discountPercentage > 0 ? (
+                          {discountPercentage > 0 && discountedMinPrice > 0 && discountedMinPrice < originalMinPrice ? (
                             <div className="flex flex-col">
                               <div className="flex items-center gap-2">
                                 <span className="text-lg font-bold text-primary">
                                   ${discountedMinPrice.toFixed(2)}
                                 </span>
-                                {originalMinPrice !== discountedMinPrice && (
-                                  <span className="text-sm line-through text-muted-foreground">
-                                    ${originalMinPrice.toFixed(2)}
-                                  </span>
-                                )}
+                                <span className="text-sm line-through text-muted-foreground">
+                                  ${originalMinPrice.toFixed(2)}
+                                </span>
                               </div>
                               {product.volumes && product.volumes.length > 1 && (
                                 <span className="text-sm text-muted-foreground">
@@ -167,7 +206,7 @@ export default function AdminSales() {
                             </div>
                           ) : (
                             <>
-                              <span className="text-lg font-bold">${originalMinPrice.toFixed(2)}</span>
+                              <span className="text-lg font-bold">${originalMinPrice > 0 ? originalMinPrice.toFixed(2) : '0.00'}</span>
                               {product.volumes && product.volumes.length > 1 && (
                                 <span className="text-sm text-muted-foreground ml-1">
                                   - ${originalMaxPrice.toFixed(2)}

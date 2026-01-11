@@ -35,6 +35,7 @@ public class ProductMP : Profile
             .ForMember(dest => dest.Notes, opt => opt.Ignore())
             .ForMember(dest => dest.Images, opt => opt.Ignore())
             .ForMember(dest => dest.Volumes, opt => opt.Ignore())
+            .ForMember(dest => dest.DiscountPercentage, opt => opt.Ignore())
             .AfterMap((src, dest) =>
             {
                 var now = DateTimeOffset.UtcNow;
@@ -51,6 +52,7 @@ public class ProductMP : Profile
                     Size = vol.Size,
                     Price = vol.Price,
                     Stock = vol.Stock,
+                    DiscountPercentage = vol.DiscountPercentage,
                     CreatedAt = now
                 }).ToList() ?? new List<ProductVolume>();
             });
@@ -59,7 +61,8 @@ public class ProductMP : Profile
         CreateMap<Product, ProductDTO>()
             .ForMember(dest => dest.Top, opt => opt.MapFrom(src => SplitNotes(src.Notes.Top)))
             .ForMember(dest => dest.Heart, opt => opt.MapFrom(src => SplitNotes(src.Notes.Heart)))
-            .ForMember(dest => dest.Base, opt => opt.MapFrom(src => SplitNotes(src.Notes.Base)));
+            .ForMember(dest => dest.Base, opt => opt.MapFrom(src => SplitNotes(src.Notes.Base)))
+            .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => 0m));
 
         // ProductUpdateDTO -> Product
         CreateMap<ProductUpdateDTO, Product>()
@@ -70,6 +73,7 @@ public class ProductMP : Profile
             .ForMember(dest => dest.Notes, opt => opt.Ignore())
             .ForMember(dest => dest.Images, opt => opt.Ignore())
             .ForMember(dest => dest.Volumes, opt => opt.Ignore())
+            .ForMember(dest => dest.DiscountPercentage, opt => opt.Ignore())
             .AfterMap((src, dest) => dest.UpdatedAt = DateTimeOffset.UtcNow);
 
         // ProductImageUpdateDTO -> ProductImage

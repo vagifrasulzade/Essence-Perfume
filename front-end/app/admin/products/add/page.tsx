@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Star, X, Upload } from "lucide-react"
 import { productApi, type ProductCreateDTO } from "@/lib/api"
 
-type VolumeRow = { size: number; price: number; stock: number }
+type VolumeRow = { size: number; price: number; stock: number; discountPercentage: number }
 
 export default function AddProduct() {
   const router = useRouter()
@@ -22,8 +22,8 @@ export default function AddProduct() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [volumes, setVolumes] = useState<VolumeRow[]>([
-    { size: 30, price: 85, stock: 10 },
-    { size: 100, price: 200, stock: 5 },
+    { size: 30, price: 85, stock: 10, discountPercentage: 0 },
+    { size: 100, price: 200, stock: 5, discountPercentage: 0 },
   ])
 
   const [formData, setFormData] = useState({
@@ -37,7 +37,6 @@ export default function AddProduct() {
     heartNotes: "",
     baseNotes: "",
     featured: false,
-    discountPercentage: "0",
   })
 
 
@@ -108,7 +107,7 @@ export default function AddProduct() {
   }
 
   const addVolumeRow = () => {
-    const newVolumes = [...volumes, { size: 50, price: 120, stock: 0 }]
+    const newVolumes = [...volumes, { size: 50, price: 120, stock: 0, discountPercentage: 0 }]
     // Sort by size (ascending: 30ml, 50ml, 100ml, 200ml)
     newVolumes.sort((a, b) => a.size - b.size)
     setVolumes(newVolumes)
@@ -122,7 +121,12 @@ export default function AddProduct() {
 
     const cleanedVolumes = volumes
       .filter((v) => v.size > 0 && v.price > 0)
-      .map((v) => ({ size: Number(v.size), price: Number(v.price), stock: Number(v.stock ?? 0) }))
+      .map((v) => ({ 
+        size: Number(v.size), 
+        price: Number(v.price), 
+        stock: Number(v.stock ?? 0),
+        discountPercentage: Number(v.discountPercentage ?? 0)
+      }))
 
     if (cleanedVolumes.length === 0) {
       alert("Please add at least one volume with valid price")
@@ -161,7 +165,7 @@ export default function AddProduct() {
         reviews: Number(formData.reviews || 0),
         rating: Number(formData.rating || 0),
         featured: Boolean(formData.featured),
-        discountPercentage: Number(formData.discountPercentage || 0),
+        discountPercentage: 0, // Product-level discount removed - use volume-level discounts instead
         top: topNotes,
         heart: heartNotes,
         base: baseNotes,
@@ -386,23 +390,6 @@ export default function AddProduct() {
               />
               <Label htmlFor="featured" className="cursor-pointer">Mark as Featured</Label>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="discountPercentage">Discount Percentage (%)</Label>
-              <Input
-                id="discountPercentage"
-                type="number"
-                min="0"
-                max="100"
-                step="0.1"
-                value={formData.discountPercentage}
-                onChange={(e) => setFormData({ ...formData, discountPercentage: e.target.value })}
-                placeholder="e.g., 20 for 20% off"
-              />
-              <p className="text-xs text-muted-foreground">
-                Enter discount percentage (0-100). This will reduce the product prices by the specified percentage.
-              </p>
-            </div>
           </CardContent>
         </Card>
 
@@ -454,14 +441,14 @@ export default function AddProduct() {
             </div>
             <div className="space-y-3">
             <div className="grid grid-cols-12 gap-3 text-sm font-semibold text-muted-foreground mb-2">
-                <div className="col-span-3">Size (ml)</div>
+                <div className="col-span-2">Size (ml)</div>
                 <div className="col-span-3">Price ($)</div>
                 <div className="col-span-3">Stock (qty)</div>
-                <div className="col-span-3">Action</div>
+                <div className="col-span-4">Action</div>
               </div>
               {volumes.map((v, i) => (
                 <div key={i} className="grid grid-cols-12 gap-3 items-center">
-                  <div className="col-span-3">
+                  <div className="col-span-2">
                     <Input
                       type="number"
                       min="1"
@@ -489,7 +476,7 @@ export default function AddProduct() {
                       placeholder="10"
                     />
                   </div>
-                  <div className="col-span-3">
+                  <div className="col-span-4">
                     <Button
                       type="button"
                       variant="destructive"

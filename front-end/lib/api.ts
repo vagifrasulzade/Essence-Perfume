@@ -112,6 +112,7 @@ export interface ProductCreateDTO {
     size: number;
     price: number;
     stock: number;
+    discountPercentage?: number;
   }>;
 }
 
@@ -138,6 +139,7 @@ export interface ProductUpdateDTO {
     size: number;
     price: number;
     stock: number;
+    discountPercentage?: number;
   }>;
 }
 

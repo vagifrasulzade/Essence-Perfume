@@ -248,6 +248,7 @@ public class ProductService : IProductService
                     Size = volumeDto.Size,
                     Price = volumeDto.Price,
                     Stock = volumeDto.Stock,
+                    DiscountPercentage = volumeDto.DiscountPercentage,
                     CreatedAt = now
                 });
             }

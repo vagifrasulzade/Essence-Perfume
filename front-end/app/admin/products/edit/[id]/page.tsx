@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Star, X, Upload } from "lucide-react"
 import { productApi, type ProductUpdateDTO } from "@/lib/api"
 
-type VolumeRow = { size: number; price: number; stock: number }
+type VolumeRow = { size: number; price: number; stock: number; discountPercentage: number }
 
 export default function EditProduct() {
   const router = useRouter()
@@ -26,8 +26,8 @@ export default function EditProduct() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [volumes, setVolumes] = useState<VolumeRow[]>([
-    { size: 30, price: 85, stock: 10 },
-    { size: 100, price: 200, stock: 5 },
+    { size: 30, price: 85, stock: 10, discountPercentage: 0 },
+    { size: 100, price: 200, stock: 5, discountPercentage: 0 },
   ])
 
   const [formData, setFormData] = useState({
@@ -82,9 +82,10 @@ export default function EditProduct() {
               size: v.size || 0,
               price: v.price || 0,
               stock: Number(v.stock ?? 0),
+              discountPercentage: Number(v.discountPercentage ?? 0),
             })))
           } else {
-            setVolumes([{ size: 30, price: 85, stock: 0 }])
+            setVolumes([{ size: 30, price: 85, stock: 0, discountPercentage: 0 }])
           }
         } else {
           alert("Product not found!")
@@ -162,7 +163,7 @@ export default function EditProduct() {
   }
 
   const addVolumeRow = () => {
-    const newVolumes = [...volumes, { size: 50, price: 120, stock: 0 }]
+    const newVolumes = [...volumes, { size: 50, price: 120, stock: 0, discountPercentage: 0 }]
     // Sort by size (ascending: 30ml, 50ml, 100ml, 200ml)
     newVolumes.sort((a, b) => a.size - b.size)
     setVolumes(newVolumes)
@@ -181,7 +182,12 @@ export default function EditProduct() {
 
     const cleanedVolumes = volumes
       .filter((v) => v.size > 0 && v.price > 0)
-      .map((v) => ({ size: Number(v.size), price: Number(v.price), stock: Number(v.stock ?? 0) }))
+      .map((v) => ({ 
+        size: Number(v.size), 
+        price: Number(v.price), 
+        stock: Number(v.stock ?? 0),
+        discountPercentage: Number(v.discountPercentage ?? 0)
+      }))
 
     if (cleanedVolumes.length === 0) {
       alert("Please add at least one volume with valid price")
@@ -230,6 +236,7 @@ export default function EditProduct() {
           size: v.size,
           price: v.price,
           stock: v.stock,
+          discountPercentage: v.discountPercentage,
         })),
       }
 
@@ -451,17 +458,6 @@ export default function EditProduct() {
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                id="featured"
-                type="checkbox"
-                checked={formData.featured}
-                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                className="h-4 w-4"
-              />
-              <Label htmlFor="featured" className="cursor-pointer">Mark as Featured</Label>
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="discountPercentage">Discount Percentage (%)</Label>
               <Input
@@ -472,11 +468,22 @@ export default function EditProduct() {
                 step="0.1"
                 value={formData.discountPercentage}
                 onChange={(e) => setFormData({ ...formData, discountPercentage: e.target.value })}
-                placeholder="e.g., 20 for 20% off"
+                placeholder="0"
               />
               <p className="text-xs text-muted-foreground">
                 Enter discount percentage (0-100). This will reduce the product prices by the specified percentage.
               </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                id="featured"
+                type="checkbox"
+                checked={formData.featured}
+                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <Label htmlFor="featured" className="cursor-pointer">Mark as Featured</Label>
             </div>
           </CardContent>
         </Card>
@@ -529,14 +536,15 @@ export default function EditProduct() {
             </div>
             <div className="space-y-3">
               <div className="grid grid-cols-12 gap-3 text-sm font-semibold text-muted-foreground mb-2">
-                <div className="col-span-3">Size (ml)</div>
-                <div className="col-span-3">Price ($)</div>
-                <div className="col-span-3">Stock (qty)</div>
+                <div className="col-span-2">Size (ml)</div>
+                <div className="col-span-2">Price ($)</div>
+                <div className="col-span-2">Stock (qty)</div>
+                <div className="col-span-3">Discount (%)</div>
                 <div className="col-span-3">Action</div>
               </div>
               {volumes.map((v, i) => (
                 <div key={i} className="grid grid-cols-12 gap-3 items-center">
-                  <div className="col-span-3">
+                  <div className="col-span-2">
                     <Input
                       type="number"
                       min="1"
@@ -548,7 +556,7 @@ export default function EditProduct() {
                       placeholder="30"
                     />
                   </div>
-                  <div className="col-span-3">
+                  <div className="col-span-2">
                     <Input
                       type="number"
                       min="0"
@@ -561,7 +569,7 @@ export default function EditProduct() {
                       placeholder="85"
                     />
                   </div>
-                  <div className="col-span-3">
+                  <div className="col-span-2">
                     <Input
                       type="number"
                       min="0"
@@ -571,6 +579,21 @@ export default function EditProduct() {
                         updateVolume(i, "stock", val)
                       }}
                       placeholder="10"
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      value={v.discountPercentage !== undefined && v.discountPercentage !== null ? v.discountPercentage : ""}
+                      onChange={(e) => {
+                        const inputValue = e.target.value
+                        const val = inputValue === "" ? 0 : parseFloat(inputValue) || 0
+                        updateVolume(i, "discountPercentage", val)
+                      }}
+                      placeholder="0"
                     />
                   </div>
                   <div className="col-span-3">

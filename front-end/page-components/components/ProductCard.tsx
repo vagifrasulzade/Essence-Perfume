@@ -21,18 +21,56 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const GenderClass = product.gender ? `category-${product.gender}` : ""
 
-  const discountPercentage = product.discountPercentage || 0
-  
-  const originalPrice = (() => {
-    if (typeof product.price === "number") return product.price
-    const prices = product.volumes?.map(v => v.price) ?? []
-    if (prices.length === 0) return undefined
-    return Math.min(...prices)
+  // Calculate minimum price with volume-level discounts
+  const { originalPrice, discountedPrice, discountPercentage: finalDiscountPercentage } = (() => {
+    if (!product.volumes || product.volumes.length === 0) {
+      const price = typeof product.price === "number" ? product.price : undefined
+      const productDiscount = product.discountPercentage || 0
+      return {
+        originalPrice: price,
+        discountedPrice: price !== undefined && productDiscount > 0
+          ? calculateDiscountedPrice(price, productDiscount)
+          : price,
+        discountPercentage: productDiscount
+      }
+    }
+
+    // Find volume with minimum discounted price (same logic as admin products page)
+    // Also check if any volume has discount to show discount badge
+    let minOriginalPrice = Infinity
+    let minDiscountedPrice = Infinity
+    let minDiscountPercentage = 0
+    let maxDiscountPercentage = 0
+
+    product.volumes.forEach(volume => {
+      const volumeDiscount = volume.discountPercentage || 0
+      const volumeOriginalPrice = volume.price
+      const volumeDiscountedPrice = volumeDiscount > 0
+        ? calculateDiscountedPrice(volumeOriginalPrice, volumeDiscount)
+        : volumeOriginalPrice
+
+      // Track maximum discount percentage for badge display
+      if (volumeDiscount > maxDiscountPercentage) {
+        maxDiscountPercentage = volumeDiscount
+      }
+
+      // Use discounted price for comparison to find the cheapest price
+      if (volumeDiscountedPrice < minDiscountedPrice) {
+        minDiscountedPrice = volumeDiscountedPrice
+        minOriginalPrice = volumeOriginalPrice
+        minDiscountPercentage = volumeDiscount
+      }
+    })
+
+    // If any volume has discount, show the maximum discount percentage
+    const displayDiscountPercentage = maxDiscountPercentage > 0 ? maxDiscountPercentage : minDiscountPercentage
+
+    return {
+      originalPrice: minOriginalPrice !== Infinity ? minOriginalPrice : undefined,
+      discountedPrice: minDiscountedPrice !== Infinity ? minDiscountedPrice : undefined,
+      discountPercentage: displayDiscountPercentage
+    }
   })()
-  
-  const discountedPrice = originalPrice !== undefined && discountPercentage > 0
-    ? calculateDiscountedPrice(originalPrice, discountPercentage)
-    : originalPrice
 
   return (
     <div className={cn("group relative", GenderClass)}>
@@ -44,9 +82,9 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          {discountPercentage > 0 && (
+          {finalDiscountPercentage > 0 && (
             <Badge className="absolute top-2 left-2 bg-red-500 text-white">
-              -{discountPercentage}%
+              -{finalDiscountPercentage}%
             </Badge>
           )}
           {isOutOfStock && (
@@ -101,10 +139,10 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-2">
           {typeof discountedPrice === "number" ? (
             <div className="flex items-center gap-2">
-              <p className={cn("font-semibold", discountPercentage > 0 && "text-primary")}>
+              <p className={cn("font-semibold", finalDiscountPercentage > 0 && "text-primary")}>
                 ${discountedPrice.toFixed(2)}
               </p>
-              {discountPercentage > 0 && originalPrice !== undefined && originalPrice !== discountedPrice && (
+              {finalDiscountPercentage > 0 && originalPrice !== undefined && originalPrice !== discountedPrice && (
                 <p className="text-sm text-muted-foreground line-through">
                   ${originalPrice.toFixed(2)}
                 </p>

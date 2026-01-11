@@ -438,6 +438,9 @@ namespace API.Migrations
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<decimal>("DiscountPercentage")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 

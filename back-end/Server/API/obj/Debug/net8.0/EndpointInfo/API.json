@@ -1855,6 +1855,10 @@
           "stock": {
             "type": "integer",
             "format": "int32"
+          },
+          "discountPercentage": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
@@ -1877,6 +1881,10 @@
           "stock": {
             "type": "integer",
             "format": "int32"
+          },
+          "discountPercentage": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
